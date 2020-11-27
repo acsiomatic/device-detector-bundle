@@ -1,0 +1,7 @@
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+    ignoreErrors:
+        - '#Method Symfony\\Component\\HttpFoundation\\HeaderBag::get\(\) invoked with 3 parameters, 1-2 required.#'

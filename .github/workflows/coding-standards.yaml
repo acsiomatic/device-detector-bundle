@@ -1,0 +1,30 @@
+name: Coding Standards
+
+on:
+
+    push:
+        branches:
+            - main
+
+    pull_request:
+
+jobs:
+
+    php-cs-fixer:
+
+        name: PHP Coding Standards
+        runs-on: ubuntu-latest
+
+        steps:
+
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Setup tools
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 7.4
+                  tools: php-cs-fixer, cs2pr
+
+            - name: Run PHP Coding Standards
+              run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr

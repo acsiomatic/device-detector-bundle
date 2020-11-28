@@ -1,5 +1,9 @@
 # AcsiomaticDeviceDetectorBundle
 
+![Tests](https://github.com/acsiomatic/device-detector-bundle/workflows/Tests/badge.svg)
+![Static Analysis](https://github.com/acsiomatic/device-detector-bundle/workflows/Static%20Analysis/badge.svg)
+![Coding Standards](https://github.com/acsiomatic/device-detector-bundle/workflows/Coding%20Standards/badge.svg)
+
 The `AcsiomaticDeviceDetectorBundle` provides integration of the [DeviceDetector] library into the [Symfony] framework.
 
 > [DeviceDetector] is a Universal Device Detection library that parses User Agents and detects devices (desktop, tablet, mobile, tv, cars, console, etc.), clients (browsers, feed readers, media players, PIMs, ...), operating systems, brands and models.

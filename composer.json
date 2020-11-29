@@ -19,7 +19,8 @@
         },
         {
             "name": "Renê Lima",
-            "email": "renedelima@gmail.com"
+            "email": "renedelima@gmail.com",
+            "homepage": "https://github.com/renedelima"
         }
     ],
     "require": {

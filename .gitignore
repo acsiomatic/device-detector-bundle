@@ -3,6 +3,5 @@
 /.phpunit.cache/
 /.phpunit.xml
 /composer.lock
-/coverage.xml
 /phpstan.neon
 /vendor/

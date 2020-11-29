@@ -67,7 +67,7 @@ jobs:
                       --with symfony/framework-bundle:${{ matrix.symfony-version }}
 
             - name: Run PHPUnit
-              run: vendor/bin/phpunit --testdox ${{ !matrix.coverage && '--no-coverage' || '' }}
+              run: vendor/bin/phpunit --testdox ${{ matrix.coverage && '--coverage-clover coverage.xml' || '--no-coverage' }}
 
             - name: Upload coverage to Codecov
               uses: codecov/codecov-action@v1

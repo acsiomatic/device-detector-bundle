@@ -3,6 +3,7 @@
 ![Tests](https://github.com/acsiomatic/device-detector-bundle/workflows/Tests/badge.svg)
 ![Static Analysis](https://github.com/acsiomatic/device-detector-bundle/workflows/Static%20Analysis/badge.svg)
 ![Coding Standards](https://github.com/acsiomatic/device-detector-bundle/workflows/Coding%20Standards/badge.svg)
+[![codecov](https://codecov.io/gh/acsiomatic/device-detector-bundle/branch/main/graph/badge.svg?token=zUb7y8rBdo)](https://codecov.io/gh/acsiomatic/device-detector-bundle)
 
 The `AcsiomaticDeviceDetectorBundle` provides integration of the [DeviceDetector] library into the [Symfony] framework.
 

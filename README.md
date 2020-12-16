@@ -54,8 +54,6 @@ class MyController
 {
     public function index(DeviceDetector $device)
     {
-        $device->parse();
-
         if ($device->isSmartphone()) {
             // ...
         }
@@ -63,13 +61,11 @@ class MyController
 }
 ```
 
-Note that you need to call `parse()` to ask for device's information.
+Note that you don't need to call `parse()` to ask for device's information.
 
 ## Usage in Twig
 
 ```twig
-{% do device.parse %}
-
 {% if device.isSmartphone %}
     {# ... #}
 {% endif %}

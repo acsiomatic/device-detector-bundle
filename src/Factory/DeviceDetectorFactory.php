@@ -2,6 +2,7 @@
 
 namespace Acsiomatic\DeviceDetectorBundle\Factory;
 
+use Acsiomatic\DeviceDetectorBundle\Bridge\DeviceDetector\LazyParserDeviceDetector;
 use DeviceDetector\Cache\PSR6Bridge;
 use DeviceDetector\DeviceDetector;
 use Psr\Cache\CacheItemPoolInterface;
@@ -18,7 +19,8 @@ abstract class DeviceDetectorFactory
         bool $discardBotInformation,
         CacheItemPoolInterface $cache = null
     ): DeviceDetector {
-        $detector = new DeviceDetector();
+        $detector = new LazyParserDeviceDetector();
+
         $detector->skipBotDetection($skipBotDetection);
         $detector->discardBotInformation($discardBotInformation);
 

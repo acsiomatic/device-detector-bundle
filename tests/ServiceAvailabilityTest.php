@@ -52,4 +52,45 @@ final class ServiceAvailabilityTest extends TestCase
 
         static::assertFalse($deviceDetector->isParsed());
     }
+
+    /**
+     * @dataProvider parserTriggers
+     *
+     * @return void
+     */
+    public function testDeviceDetectorParserIsLazilyCalled(string $method)
+    {
+        $kernel = new Kernel('test', true);
+        $kernel->appendBundle(new FrameworkBundle());
+        $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
+        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
+
+        $kernel->boot();
+
+        /** @var DeviceDetector $deviceDetector */
+        $deviceDetector = $kernel->getContainer()->get('device_detector.public');
+
+        static::assertFalse($deviceDetector->isParsed());
+
+        \call_user_func([$deviceDetector, $method]);
+
+        static::assertTrue($deviceDetector->isParsed());
+    }
+
+    public function parserTriggers(): array
+    {
+        return [
+            'isBot' => ['isBot'],
+            'isMobile' => ['isMobile'],
+            'isDesktop' => ['isDesktop'],
+            'getOs' => ['getOs'],
+            'getClient' => ['getClient'],
+            'getDevice' => ['getDevice'],
+            'getBrand' => ['getBrand'],
+            'getBrandName' => ['getBrandName'],
+            'getModel' => ['getModel'],
+            'getBot' => ['getBot'],
+        ];
+    }
 }

@@ -37,7 +37,7 @@ final class ServiceAvailabilityTest extends TestCase
     /**
      * @return void
      */
-    public function testDeviceDetectorServiceMustNotBeAutomaticallyParsed()
+    public function testDeviceDetectorServiceIsNotParsed()
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -58,7 +58,7 @@ final class ServiceAvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function testDeviceDetectorParserIsLazilyCalled(string $method)
+    public function testDeviceDetectorIsAutomaticallyParsedOnTheFly(string $method)
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());

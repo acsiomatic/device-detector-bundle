@@ -1,11 +1,11 @@
 <?php
 
-namespace Acsiomatic\DeviceDetectorBundle\Bridge\DeviceDetector;
+namespace Acsiomatic\DeviceDetectorBundle\Decoration;
 
 /**
  * @internal
  */
-trait AutoParserFor4Trait
+trait AutoParser3Trait
 {
     public function isBot(): bool
     {
@@ -28,42 +28,42 @@ trait AutoParserFor4Trait
         return parent::isDesktop();
     }
 
-    public function getOs(string $attr = '')
+    public function getOs($attr = '')
     {
         $this->parse();
 
         return parent::getOs($attr);
     }
 
-    public function getClient(string $attr = '')
+    public function getClient($attr = '')
     {
         $this->parse();
 
         return parent::getClient($attr);
     }
 
-    public function getDevice(): ?int
+    public function getDevice()
     {
         $this->parse();
 
         return parent::getDevice();
     }
 
-    public function getBrand(): string
+    public function getBrand()
     {
         $this->parse();
 
         return parent::getBrand();
     }
 
-    public function getBrandName(): string
+    public function getBrandName()
     {
         $this->parse();
 
         return parent::getBrandName();
     }
 
-    public function getModel(): string
+    public function getModel()
     {
         $this->parse();
 

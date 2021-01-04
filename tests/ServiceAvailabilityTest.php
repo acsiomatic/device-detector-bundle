@@ -37,7 +37,7 @@ final class ServiceAvailabilityTest extends TestCase
     /**
      * @return void
      */
-    public function testDeviceDetectorServiceIsNotParsed()
+    public function testDeviceDetectorServiceIsNotParsedByDefault()
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -58,7 +58,7 @@ final class ServiceAvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function testDeviceDetectorIsAutomaticallyParsedOnTheFly(string $method)
+    public function testDeviceDetectorIsParsedOnDemand(string $method)
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -73,11 +73,16 @@ final class ServiceAvailabilityTest extends TestCase
 
         static::assertFalse($deviceDetector->isParsed());
 
-        \call_user_func([$deviceDetector, $method]);
+        /** @var callable $callable */
+        $callable = [$deviceDetector, $method];
+        \call_user_func($callable);
 
         static::assertTrue($deviceDetector->isParsed());
     }
 
+    /**
+     * @return array<string, array<string>>
+     */
     public function parserTriggers(): array
     {
         return [

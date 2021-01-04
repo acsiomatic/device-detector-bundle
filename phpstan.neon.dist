@@ -3,5 +3,8 @@ parameters:
     paths:
         - src
         - tests
+    excludes_analyse:
+        - src/Decoration/AutoParser3Trait.php
+        - src/Decoration/AutoParser4Trait.php
     ignoreErrors:
         - '#Method Symfony\\Component\\HttpFoundation\\HeaderBag::get\(\) invoked with 3 parameters, 1-2 required.#'

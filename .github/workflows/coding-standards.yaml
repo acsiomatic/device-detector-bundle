@@ -26,5 +26,12 @@ jobs:
                   php-version: 7.4
                   tools: php-cs-fixer, cs2pr
 
+            - name: Cache PHP Coding Standards
+              uses: actions/cache@v2
+              with:
+                  path: var/.php_cs.cache
+                  key: php-cs-fixer-${{ github.sha }}
+                  restore-keys: php-cs-fixer-
+
             - name: Run PHP Coding Standards
               run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr

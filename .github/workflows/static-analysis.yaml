@@ -40,5 +40,12 @@ jobs:
             - name: Install Composer dependencies
               run: composer install --no-progress --prefer-dist --optimize-autoloader
 
+            - name: Cache PHPStan
+              uses: actions/cache@v2
+              with:
+                  path: var/phpstan/
+                  key: phpstan-${{ github.sha }}
+                  restore-keys: phpstan-
+
             - name: Run PHP Static Analysis
               run: phpstan analyse --no-progress --error-format=checkstyle | cs2pr

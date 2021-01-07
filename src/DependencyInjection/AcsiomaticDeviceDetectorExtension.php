@@ -2,6 +2,7 @@
 
 namespace Acsiomatic\DeviceDetectorBundle\DependencyInjection;
 
+use Acsiomatic\DeviceDetectorBundle\Contracts\DeviceDetectorFactoryInterface;
 use Acsiomatic\DeviceDetectorBundle\Factory\DeviceDetectorFactory;
 use Acsiomatic\DeviceDetectorBundle\Twig\TwigExtension;
 use DeviceDetector\DeviceDetector;
@@ -27,14 +28,22 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container
-            ->register(DeviceDetector::class, DeviceDetector::class)
+            ->register(DeviceDetectorFactoryInterface::class, DeviceDetectorFactory::class)
             ->setPublic(false)
-            ->setFactory([DeviceDetectorFactory::class, 'create'])
             ->setArguments([
-                new Reference(RequestStack::class),
                 $config['bot']['skip_detection'],
                 $config['bot']['discard_information'],
                 null !== $config['cache']['pool'] ? new Reference($config['cache']['pool']) : null,
+            ])
+        ;
+
+        $container
+            ->register(DeviceDetector::class, DeviceDetector::class)
+            ->setPublic(false)
+            ->setFactory([DeviceDetectorFactory::class, 'createDeviceDetectorFromRequestStack'])
+            ->setArguments([
+                new Reference(DeviceDetectorFactoryInterface::class),
+                new Reference(RequestStack::class),
             ])
         ;
 

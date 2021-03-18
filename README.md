@@ -47,6 +47,9 @@ acsiomatic_device_detector:
 
 ## Usage in controllers
 
+You can inject `DeviceDetector` as a service.
+This bundle sets up this class according to the configurations under the `acsiomatic_device_detector` section in order to provide information about the current request.
+
 ```php
 use DeviceDetector\DeviceDetector;
 
@@ -67,12 +70,46 @@ Note that you need to call `parse()` to ask for device's information.
 
 ## Usage in Twig
 
+The `DeviceDetector` service is assigned to the Twig templates as `device` variable.
+
 ```twig
 {% do device.parse %}
 
 {% if device.isSmartphone %}
     {# ... #}
 {% endif %}
+```
+
+## Parsing custom request
+
+You might want to parse other request than the current one.
+This bundle provides a service that implements `DeviceDetectorFactoryInterface`.
+This service provides a method that creates fresh `DeviceDetector` instances according to the configurations under the `acsiomatic_device_detector` section, but it doesn't attach them to any request.
+
+```php
+use Acsiomatic\DeviceDetectorBundle\Contracts\DeviceDetectorFactoryInterface;
+
+class SmartphoneDeterminer
+{
+    /**
+     * @var DeviceDetectorFactoryInterface
+     */
+    private $deviceDetectorFactory;
+
+    public function __construct(DeviceDetectorFactoryInterface $factory)
+    {
+        $this->deviceDetectorFactory = $factory;
+    }
+
+    public function isSmartphone(string $userAgent): bool
+    {
+        $deviceDetector = $this->deviceDetectorFactory->createDeviceDetector();
+        $deviceDetector->setUserAgent($userAgent);
+        $deviceDetector->parse();
+
+        return $deviceDetector->isSmartphone();
+    }
+}
 ```
 
 [DeviceDetector class]: https://github.com/matomo-org/device-detector/blob/master/DeviceDetector.php

@@ -3,6 +3,7 @@
 namespace Acsiomatic\DeviceDetectorBundle\Tests;
 
 use Acsiomatic\DeviceDetectorBundle\AcsiomaticDeviceDetectorBundle;
+use Acsiomatic\DeviceDetectorBundle\Contracts\DeviceDetectorFactoryInterface;
 use Acsiomatic\DeviceDetectorBundle\Tests\Util\Compiler\CallbackContainerPass;
 use Acsiomatic\DeviceDetectorBundle\Tests\Util\Compiler\CompilerPassFactory;
 use Acsiomatic\DeviceDetectorBundle\Tests\Util\HttpKernel\Kernel;
@@ -51,5 +52,32 @@ final class ServiceAvailabilityTest extends TestCase
         $deviceDetector = $kernel->getContainer()->get('device_detector.public');
 
         static::assertFalse($deviceDetector->isParsed());
+    }
+
+    /**
+     * @return void
+     */
+    public function testDeviceDetectorFactoryService()
+    {
+        $kernel = new Kernel('test', true);
+        $kernel->appendBundle(new FrameworkBundle());
+        $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
+        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendCompilerPass(
+            CompilerPassFactory::createPublicAlias(
+                'device_detector_factory.public',
+                DeviceDetectorFactoryInterface::class
+            )
+        );
+
+        $kernel->boot();
+
+        /** @var DeviceDetectorFactoryInterface $deviceDetectorFactory */
+        $deviceDetectorFactory = $kernel->getContainer()->get('device_detector_factory.public');
+        $deviceDetector = $deviceDetectorFactory->createDeviceDetector();
+
+        static::assertInstanceOf(DeviceDetector::class, $deviceDetector);
+
+        $kernel->boot();
     }
 }

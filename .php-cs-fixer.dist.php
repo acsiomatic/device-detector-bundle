@@ -7,7 +7,7 @@ $finder = PhpCsFixer\Finder::create()
     ])
 ;
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setCacheFile(__DIR__.'/var/.php_cs.cache')
     ->setRiskyAllowed(true)
     ->setRules([

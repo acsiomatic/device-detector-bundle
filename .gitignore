@@ -1,4 +1,4 @@
-/.php_cs
+/.php-cs-fixer.php
 /Makefile
 /composer.lock
 /phpstan.neon

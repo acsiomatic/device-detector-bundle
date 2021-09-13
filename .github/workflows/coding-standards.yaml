@@ -29,6 +29,9 @@ jobs:
                   php-version: 7.4
                   tools: php-cs-fixer:2, cs2pr
 
+            - name: Create var/ directory
+              run: mkdir var
+
             - name: Cache PHP Coding Standards
               uses: actions/cache@v2
               with:

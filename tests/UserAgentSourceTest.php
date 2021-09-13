@@ -16,7 +16,7 @@ final class UserAgentSourceTest extends TestCase
     /**
      * @return void
      */
-    public function testDeviceDetectorServiceAssumesMasterRequestUserAgent()
+    public function testDeviceDetectorServiceAssumesMainRequestUserAgent()
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -27,20 +27,20 @@ final class UserAgentSourceTest extends TestCase
 
         $kernel->boot();
 
-        $masterRequest = new Request();
-        $masterRequest->headers->set('user-agent', 'MASTER');
+        $mainRequest = new Request();
+        $mainRequest->headers->set('user-agent', 'MAIN');
 
         $currentRequest = new Request();
         $currentRequest->headers->set('user-agent', 'CURRENT');
 
         /** @var RequestStack $requestStack */
         $requestStack = $kernel->getContainer()->get('request_stack.public');
-        $requestStack->push($masterRequest);
+        $requestStack->push($mainRequest);
         $requestStack->push($currentRequest);
 
         /** @var DeviceDetector $deviceDetector */
         $deviceDetector = $kernel->getContainer()->get('device_detector.public');
 
-        static::assertSame('MASTER', $deviceDetector->getUserAgent());
+        static::assertSame('MAIN', $deviceDetector->getUserAgent());
     }
 }

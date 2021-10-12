@@ -20,7 +20,7 @@ This bundle provides the [DeviceDetector class] as a [service], and a [Twig glob
 
 ## Installation
 
-This bundle is compatible with [Symfony] from `3.4` to `5.x`, and [DeviceDetector] from `3.9` to `4.x`.
+This bundle is compatible with [Symfony] from `3.4` to `6.x`, and [DeviceDetector] from `3.9` to `4.x`.
 
 You can install the bundle using Symfony Flex:
 
@@ -36,13 +36,24 @@ You can configure the bundle using the `acsiomatic_device_detector` configuratio
 # config/packages/acsiomatic_device_detector.yaml
 
 acsiomatic_device_detector:
+
     cache:
-        pool: 'cache.app' # null value disables caching
+
+        # If null, it will disable caching
+        pool: 'cache.app'
+
     bot:
-        skip_detection: false
+
+        # If true getBot() will only return true if a bot was detected (speeds up detection a bit)
         discard_information: false
+
+        # If true, bot detection will completely be skipped (bots will be detected as regular devices then)
+        skip_detection: false
+
     twig:
-        variable_name: 'device' # null value disables variable assignment
+
+        # If null, it will not assign Twig variable
+        variable_name: 'device'
 ```
 
 ## Usage in controllers

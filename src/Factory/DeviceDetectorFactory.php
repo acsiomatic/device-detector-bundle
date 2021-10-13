@@ -28,19 +28,28 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
      */
     private $cache;
 
+    /**
+     * @var DeviceDetectorProxyFactory|null
+     */
+    private $proxyFactory;
+
     public function __construct(
         bool $skipBotDetection,
         bool $discardBotInformation,
-        CacheItemPoolInterface $cache = null
+        ?CacheItemPoolInterface $cache,
+        ?DeviceDetectorProxyFactory $proxyFactory
     ) {
         $this->skipBotDetection = $skipBotDetection;
         $this->discardBotInformation = $discardBotInformation;
         $this->cache = $cache;
+        $this->proxyFactory = $proxyFactory;
     }
 
     public function createDeviceDetector(): DeviceDetector
     {
-        $detector = new DeviceDetector();
+        $detector = $this->proxyFactory !== null
+            ? $this->proxyFactory->createDeviceDetectorProxy()
+            : new DeviceDetector();
 
         $detector->skipBotDetection($this->skipBotDetection);
         $detector->discardBotInformation($this->discardBotInformation);

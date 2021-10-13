@@ -22,7 +22,7 @@ final class Kernel extends BaseKernel
 
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
-        $loader->load(function (ContainerBuilder $container) {
+        $loader->load(function (ContainerBuilder $container): void {
             foreach ($this->appendedExtensionConfigurations as $extension => $config) {
                 $container->loadFromExtension($extension, $config);
             }

@@ -44,8 +44,9 @@ final class Configuration implements ConfigurationInterface
             ->end()
             ->end()
 
-            ->end()
-        ;
+            ->booleanNode('auto_parse')->defaultTrue()->end()
+
+            ->end();
 
         return $builder;
     }

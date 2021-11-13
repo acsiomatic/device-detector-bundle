@@ -27,8 +27,8 @@ jobs:
                     - { dd-version: '^4.0',  sf-version: '^4.0',  php-version: '7.3' }
                     - { dd-version: '4.0.*', sf-version: '5.0.*', php-version: '7.4' }
                     - { dd-version: '^4.0',  sf-version: '^5.0',  php-version: '8.0', coverage: true }
-                    - { dd-version: '4.0.*', sf-version: '6.0.*', php-version: '8.0' }
-                    - { dd-version: '^4.0',  sf-version: '^6.0',  php-version: '8.1' }
+                    - { dd-version: '5.0.*', sf-version: '6.0.*', php-version: '8.0' }
+                    - { dd-version: '^5.0',  sf-version: '^6.0',  php-version: '8.1' }
 
         steps:
 

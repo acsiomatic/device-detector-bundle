@@ -20,7 +20,7 @@ This bundle provides the [DeviceDetector class] as a [service], and a [Twig glob
 
 ## Installation
 
-This bundle is compatible with [Symfony] from `3.4` to `6.x`, and [DeviceDetector] from `3.9` to `4.x`.
+This bundle is compatible with [Symfony] from `3.4` to `6.x`, and [DeviceDetector] from `3.9` to `5.x`.
 
 You can install the bundle using Symfony Flex:
 

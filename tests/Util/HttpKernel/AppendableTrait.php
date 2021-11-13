@@ -13,7 +13,7 @@ trait AppendableTrait
     private $appendedBundles = [];
 
     /**
-     * @var array<string, mixed>
+     * @var array<string, array<mixed>>
      */
     private $appendedExtensionConfigurations = [];
 

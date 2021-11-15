@@ -63,8 +63,7 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
             : $requestStack->getMainRequest();
 
         if ($request) {
-            // Third argument is a BC layer for Symfony 4.3 and older
-            $userAgent = $request->headers->get('user-agent', '', true);
+            $userAgent = $request->headers->get('user-agent', '');
             $detector->setUserAgent((string) $userAgent);
         }
 

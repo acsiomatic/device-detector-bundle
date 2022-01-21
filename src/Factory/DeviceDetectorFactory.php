@@ -16,12 +16,12 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
     /**
      * @var bool
      */
-    private $skipBotDetection;
+    private $skipBotDetection = false;
 
     /**
      * @var bool
      */
-    private $discardBotInformation;
+    private $discardBotInformation = false;
 
     /**
      * @var CacheItemPoolInterface|null
@@ -45,7 +45,7 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
         $detector->skipBotDetection($this->skipBotDetection);
         $detector->discardBotInformation($this->discardBotInformation);
 
-        if ($this->cache) {
+        if ($this->cache !== null) {
             $detector->setCache(new PSR6Bridge($this->cache));
         }
 
@@ -58,7 +58,7 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
     ): DeviceDetector {
         $detector = $factory->createDeviceDetector();
 
-        $request = !method_exists($requestStack, 'getMainRequest')
+        $request = method_exists($requestStack, 'getMasterRequest')
             ? $requestStack->getMasterRequest() // BC for Symfony 5.2 and older
             : $requestStack->getMainRequest();
 

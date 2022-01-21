@@ -13,10 +13,7 @@ use Twig\Environment;
 
 final class TwigTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testDeviceDetectorMustBeAvailableByDefault()
+    public function testDeviceDetectorMustBeAvailableByDefault(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -34,10 +31,7 @@ final class TwigTest extends TestCase
         static::assertSame('yes', trim($twig->render('device_is_defined.txt.twig')));
     }
 
-    /**
-     * @return void
-     */
-    public function testDeviceDetectorMustNotBeAutomaticallyParsed()
+    public function testDeviceDetectorMustNotBeAutomaticallyParsed(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -55,10 +49,7 @@ final class TwigTest extends TestCase
         static::assertSame('no', trim($twig->render('device_is_parsed.txt.twig')));
     }
 
-    /**
-     * @return void
-     */
-    public function testDisablingDeviceDetectorVariableAssignment()
+    public function testDisablingDeviceDetectorVariableAssignment(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -77,10 +68,7 @@ final class TwigTest extends TestCase
         static::assertSame('no', trim($twig->render('device_is_defined.txt.twig')));
     }
 
-    /**
-     * @return void
-     */
-    public function testCustomDeviceDetectorVariableName()
+    public function testCustomDeviceDetectorVariableName(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -100,10 +88,7 @@ final class TwigTest extends TestCase
         static::assertSame('yes', trim($twig->render('custom_is_defined.txt.twig')));
     }
 
-    /**
-     * @return void
-     */
-    public function testDeviceDetectorIsTheSameAsThisFromContainer()
+    public function testDeviceDetectorIsTheSameAsThisFromContainer(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());

@@ -11,36 +11,46 @@ If you want to report bugs, ask for enhancements, or other requests, [open an is
 ### Requirements
 
 - [Git]
-- [Make]
-- [Podman] (or [Docker])
+- [PHP]
+- [Composer]
+- [Make] (optional)
 
 ### Usual workflow
 
 1. [Fork this project]
-1. Clone the fork to your machine
+2. Clone the fork to your machine
     ```bash
     git clone git@github.com:YOUR_USERNAME/device-detector-bundle.git
     ```
-1. Get inside the project
+3. Get inside the project
     ```bash
     cd device-detector-bundle
     ```
-1. Check it
+4. Instal dependencies
+    ```bash
+    composer install
+    ```
+5. Check it
     ```bash
     make check
     ```
-    - The `check` recipe will run [static analysis, coding standards checks, and tests](#makefile-recipes).
+    or
+    ```bash
+    vendor/bin/phpstan analyse
+    vendor/bin/rector process --dry-run
+    vendor/bin/php-cs-fixer fix --dry-run
+    vendor/bin/phpunit
+    ```
     - If something goes wrong, please, [open an issue].
-1. [Create a branch]
-1. Do your magic
-1. Check your changes
+6. [Create a branch]
+7. Do your magic
+8. Check your changes
     ```bash
     make check
     ```
-    - The `check` recipe will run [static analysis, coding standards checks, and tests](#makefile-recipes).
     - You might [check how things go in a real application](#try-changes-in-a-real-application).
     - You might [run tests against some specific PHP version](#run-tests-against-some-specific-php-version).
-1. [Create a pull request]
+9. [Create a pull request]
 
 ### Try changes in a real application
 
@@ -70,13 +80,6 @@ Don't forget to update (or require) the bundle in the application:
 composer update acsiomatic/device-detector-bundle
 ```
 
-### Run tests against some specific PHP version
-
-```bash
-make clean
-PHP_VERSION=7.3 make test
-```
-
 ### Makefile recipes
 
 Here is the list of recipes:
@@ -87,27 +90,30 @@ make help
 
 ```
 Usage:
-  [PHP_VERSION=major.minor] make [target]
+  make [target]
 
 Available targets:
   help                Display this message help
  Checks
   check               Run all checks
-  static-analysis     Run static analysis
+  phpstan-check       Run PHP Static Analysis
+  rector-check        Check for Rector coding standards violations
   cs-check            Check for coding standards violations
-  test                Run tests
+  phpunit             Run PHPUnit tests
  Fixers
-  cs-fix              Fix coding standards
+  fix                 Run all fixers
+  rector-fix          Fix Rector coding standards violations
+  cs-fix              Fix coding standards violations
  Misc
   clean               Clean up workspace
 ```
 
+[composer]: https://getcomposer.org/
 [create a branch]: https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-and-deleting-branches-within-your-repository
 [create a pull request]: https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork
-[docker]: https://www.docker.com/
 [fork this project]: https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/working-with-forks
 [git]: https://git-scm.com/
 [make]: https://www.gnu.org/software/make/
 [open an issue]: https://docs.github.com/en/free-pro-team@latest/github/managing-your-work-on-github/creating-an-issue
 [path Composer repository]: https://getcomposer.org/doc/05-repositories.md#path
-[podman]: https://podman.io/
+[php]: https://www.php.net/

@@ -13,10 +13,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 final class UserAgentSourceTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testDeviceDetectorServiceAssumesMainRequestUserAgent()
+    public function testDeviceDetectorServiceAssumesMainRequestUserAgent(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());

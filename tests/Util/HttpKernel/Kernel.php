@@ -20,10 +20,7 @@ final class Kernel extends BaseKernel
         return $this->appendedBundles;
     }
 
-    /**
-     * @return void
-     */
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load(function (ContainerBuilder $container) {
             foreach ($this->appendedExtensionConfigurations as $extension => $config) {
@@ -32,10 +29,7 @@ final class Kernel extends BaseKernel
         });
     }
 
-    /**
-     * @return void
-     */
-    protected function build(ContainerBuilder $container)
+    protected function build(ContainerBuilder $container): void
     {
         foreach ($this->appendedCompilersPass as $compilersPass) {
             $container->addCompilerPass($compilersPass);

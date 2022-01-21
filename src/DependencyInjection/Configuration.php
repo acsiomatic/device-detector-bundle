@@ -15,12 +15,9 @@ final class Configuration implements ConfigurationInterface
         $name = 'acsiomatic_device_detector';
         $builder = new TreeBuilder($name);
 
-        if (method_exists($builder, 'root')) {
-            // BC layer for Symfony 4.1 and older
-            $rootNode = $builder->root($name);
-        } else {
-            $rootNode = $builder->getRootNode();
-        }
+        $rootNode = method_exists($builder, 'root')
+            ? $builder->root($name) // BC layer for Symfony 4.1 and older
+            : $builder->getRootNode();
 
         $rootNode
             ->children()

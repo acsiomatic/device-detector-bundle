@@ -1,0 +1,37 @@
+name: Composer Normalizer
+
+on:
+
+    push:
+        branches:
+            - main
+
+    pull_request:
+
+    schedule:
+        - cron: '20 16 * * SUN'
+
+jobs:
+
+    rector:
+
+        name: Composer Normalizer
+        runs-on: ubuntu-latest
+
+        steps:
+
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Setup tools
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.1
+                  tools: composer-normalize
+                  coverage: none
+
+            - name: Install Composer dependencies
+              uses: ramsey/composer-install@v2
+
+            - name: Run Composer Normalizer
+              run: composer-normalize --dry-run

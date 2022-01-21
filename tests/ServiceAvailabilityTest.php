@@ -14,10 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class ServiceAvailabilityTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testDeviceDetectorServiceExistsAndIsPrivate()
+    public function testDeviceDetectorServiceExistsAndIsPrivate(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -35,10 +32,7 @@ final class ServiceAvailabilityTest extends TestCase
         $kernel->boot();
     }
 
-    /**
-     * @return void
-     */
-    public function testDeviceDetectorServiceMustNotBeAutomaticallyParsed()
+    public function testDeviceDetectorServiceMustNotBeAutomaticallyParsed(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -54,10 +48,7 @@ final class ServiceAvailabilityTest extends TestCase
         static::assertFalse($deviceDetector->isParsed());
     }
 
-    /**
-     * @return void
-     */
-    public function testDeviceDetectorFactoryService()
+    public function testDeviceDetectorFactoryService(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());

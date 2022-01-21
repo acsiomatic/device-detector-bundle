@@ -1,4 +1,4 @@
-name: Coding Standards
+name: PHP Coding Standards
 
 on:
 
@@ -26,8 +26,12 @@ jobs:
             - name: Setup tools
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.4
-                  tools: php-cs-fixer:3, cs2pr
+                  php-version: 8.1
+                  tools: cs2pr
+                  coverage: none
+
+            - name: Install Composer dependencies
+              uses: ramsey/composer-install@v2
 
             - name: Create var/ directory
               run: mkdir var
@@ -40,4 +44,4 @@ jobs:
                   restore-keys: php-cs-fixer-
 
             - name: Run PHP Coding Standards
-              run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
+              run: vendor/bin/php-cs-fixer fix --dry-run --format=checkstyle | cs2pr

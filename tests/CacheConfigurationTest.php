@@ -12,10 +12,7 @@ use Symfony\Component\Cache\Adapter\TraceableAdapter;
 
 final class CacheConfigurationTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCacheAppIsAutomaticallyAttachedToDeviceDetectorService()
+    public function testCacheAppIsAutomaticallyAttachedToDeviceDetectorService(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -35,15 +32,13 @@ final class CacheConfigurationTest extends TestCase
         $cacheApp = $kernel->getContainer()->get('cache.app.public');
 
         $cacheApp->clearCalls();
+
         $deviceDetector->parse();
 
         static::assertNotEmpty($cacheApp->getCalls());
     }
 
-    /**
-     * @return void
-     */
-    public function testCustomPoolConfiguration()
+    public function testCustomPoolConfiguration(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -76,10 +71,7 @@ final class CacheConfigurationTest extends TestCase
         static::assertNotEmpty($cacheNotApp->getCalls());
     }
 
-    /**
-     * @return void
-     */
-    public function testDisablingCacheConfiguration()
+    public function testDisablingCacheConfiguration(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -100,6 +92,7 @@ final class CacheConfigurationTest extends TestCase
         $cacheApp = $kernel->getContainer()->get('cache.app.public');
 
         $cacheApp->clearCalls();
+
         $deviceDetector->parse();
 
         static::assertEmpty($cacheApp->getCalls());

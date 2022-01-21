@@ -1,0 +1,62 @@
+name: PHPUnit
+
+on:
+
+    push:
+        branches:
+            - main
+
+    pull_request:
+
+    schedule:
+        - cron: '20 16 * * SUN'
+
+jobs:
+
+    phpunit:
+
+        name: DD ${{ matrix.dd }} SF ${{ matrix.sf }} PHP ${{ matrix.php }}
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - { dd: '3.9.*', sf: '3.4.*', php: '7.1' }
+                    - { dd: '^3.9',  sf: '^3.4',  php: '7.1' }
+                    - { dd: '4.0.*', sf: '4.0.*', php: '7.2' }
+                    - { dd: '^4.0',  sf: '^4.0',  php: '7.2' }
+                    - { dd: '4.0.*', sf: '5.0.*', php: '7.3' }
+                    - { dd: '^4.0',  sf: '^5.0',  php: '7.3' }
+                    - { dd: '5.0.*', sf: '5.0.*', php: '7.4' }
+                    - { dd: '^5.0',  sf: '^5.0',  php: '7.4' }
+                    - { dd: '5.0.*', sf: '6.0.*', php: '8.0' }
+                    - { dd: '^5.0',  sf: '^6.0',  php: '8.0' }
+                    - { dd: '5.0.*', sf: '6.0.*', php: '8.1' }
+                    - { dd: '^5.0',  sf: '^6.0',  php: '8.1', coverage: true }
+
+        steps:
+
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  coverage: ${{ matrix.coverage && 'pcov' || 'none' }}
+
+            - name: Install Composer dependencies
+              uses: ramsey/composer-install@v2
+              with:
+                  composer-options: >
+                    --with matomo/device-detector:${{ matrix.dd }}
+                    --with symfony/framework-bundle:${{ matrix.sf }}
+
+            - name: Run PHPUnit
+              run: vendor/bin/phpunit --testdox ${{ matrix.coverage && '--coverage-clover coverage.xml' || '--no-coverage' }}
+
+            - name: Upload coverage to Codecov
+              uses: codecov/codecov-action@v2
+              if: ${{ matrix.coverage }}
+              with:
+                  file: ./coverage.xml

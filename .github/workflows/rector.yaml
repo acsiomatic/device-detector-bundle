@@ -1,0 +1,36 @@
+name: Rector
+
+on:
+
+    push:
+        branches:
+            - main
+
+    pull_request:
+
+    schedule:
+        - cron: '20 16 * * SUN'
+
+jobs:
+
+    rector:
+
+        name: Rector
+        runs-on: ubuntu-latest
+
+        steps:
+
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Setup tools
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.1
+                  coverage: none
+
+            - name: Install Composer dependencies
+              uses: ramsey/composer-install@v2
+
+            - name: Run PHP Static Analysis
+              run: vendor/bin/rector process --dry-run --output-format=json

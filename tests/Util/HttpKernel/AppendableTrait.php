@@ -22,28 +22,20 @@ trait AppendableTrait
      */
     private $appendedCompilersPass = [];
 
-    /**
-     * @return void
-     */
-    public function appendBundle(BundleInterface $bundle)
+    public function appendBundle(BundleInterface $bundle): void
     {
         $this->appendedBundles[] = $bundle;
     }
 
     /**
      * @param array<mixed> $config
-     *
-     * @return void
      */
-    public function appendExtensionConfiguration(string $extension, array $config = [])
+    public function appendExtensionConfiguration(string $extension, array $config = []): void
     {
         $this->appendedExtensionConfigurations[$extension] = $config;
     }
 
-    /**
-     * @return void
-     */
-    public function appendCompilerPass(CompilerPassInterface $compilerPass)
+    public function appendCompilerPass(CompilerPassInterface $compilerPass): void
     {
         $this->appendedCompilersPass[] = $compilerPass;
     }

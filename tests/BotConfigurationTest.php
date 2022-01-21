@@ -12,14 +12,11 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 final class BotConfigurationTest extends TestCase
 {
     /**
-     * @private
+     * @var string
      */
-    const BOT_USER_AGENT = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';
+    private const BOT_USER_AGENT = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';
 
-    /**
-     * @return void
-     */
-    public function testBotDetectionMustNotBeSkippedByDefault()
+    public function testBotDetectionMustNotBeSkippedByDefault(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -37,10 +34,7 @@ final class BotConfigurationTest extends TestCase
         static::assertTrue($deviceDetector->isBot());
     }
 
-    /**
-     * @return void
-     */
-    public function testSkippingBotDetection()
+    public function testSkippingBotDetection(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -59,10 +53,7 @@ final class BotConfigurationTest extends TestCase
         static::assertFalse($deviceDetector->isBot());
     }
 
-    /**
-     * @return void
-     */
-    public function testDoNotSkipBotDetection()
+    public function testDoNotSkipBotDetection(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -81,10 +72,7 @@ final class BotConfigurationTest extends TestCase
         static::assertTrue($deviceDetector->isBot());
     }
 
-    /**
-     * @return void
-     */
-    public function testBotInformationMustNotBeDiscardedByDefault()
+    public function testBotInformationMustNotBeDiscardedByDefault(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -105,10 +93,7 @@ final class BotConfigurationTest extends TestCase
         static::assertArrayHasKey('name', $botInfo);
     }
 
-    /**
-     * @return void
-     */
-    public function testDiscardingBotInformation()
+    public function testDiscardingBotInformation(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -131,10 +116,7 @@ final class BotConfigurationTest extends TestCase
         static::assertFalse(isset($botInfo['name']));
     }
 
-    /**
-     * @return void
-     */
-    public function testDoNotDiscardBotInformation()
+    public function testDoNotDiscardBotInformation(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());

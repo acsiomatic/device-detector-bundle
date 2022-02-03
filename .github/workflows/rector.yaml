@@ -32,5 +32,5 @@ jobs:
             - name: Install Composer dependencies
               uses: ramsey/composer-install@v2
 
-            - name: Run PHP Static Analysis
+            - name: Run Rector
               run: vendor/bin/rector process --dry-run --output-format=json

@@ -48,8 +48,7 @@ If you want to report bugs, ask for enhancements, or other requests, [open an is
     ```bash
     make check
     ```
-    - You might [check how things go in a real application](#try-changes-in-a-real-application).
-    - You might [run tests against some specific PHP version](#run-tests-against-some-specific-php-version).
+    You might [check how things go in a real application](#try-changes-in-a-real-application).
 9. [Create a pull request]
 
 ### Try changes in a real application

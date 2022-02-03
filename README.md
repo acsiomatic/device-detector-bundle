@@ -1,9 +1,9 @@
 # AcsiomaticDeviceDetectorBundle
 
-[![Tests](https://github.com/acsiomatic/device-detector-bundle/workflows/Tests/badge.svg)](https://github.com/acsiomatic/device-detector-bundle/actions?query=workflow%3ATests+branch%3Amain)
-[![Static Analysis](https://github.com/acsiomatic/device-detector-bundle/workflows/Static%20Analysis/badge.svg)](https://github.com/acsiomatic/device-detector-bundle/actions?query=workflow%3A%22Static+Analysis%22+branch%3Amain)
-[![Coding Standards](https://github.com/acsiomatic/device-detector-bundle/workflows/Coding%20Standards/badge.svg)](https://github.com/acsiomatic/device-detector-bundle/actions?query=workflow%3A%22Coding+Standards%22+branch%3Amain)
-[![codecov](https://codecov.io/gh/acsiomatic/device-detector-bundle/branch/main/graph/badge.svg?token=zUb7y8rBdo)](https://codecov.io/gh/acsiomatic/device-detector-bundle)
+[![PHPUnit](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/phpunit.yaml/badge.svg)](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/phpunit.yaml)
+[![PHP Static Analysis](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/phpstan.yaml/badge.svg)](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/phpstan.yaml)
+[![Rector](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/rector.yaml/badge.svg)](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/rector.yaml)
+[![PHP Coding Standards](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/php-cs-fixer.yaml/badge.svg)](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/php-cs-fixer.yaml)
 
 The `AcsiomaticDeviceDetectorBundle` provides integration of the [DeviceDetector] library into the [Symfony] framework.
 

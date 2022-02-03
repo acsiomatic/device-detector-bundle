@@ -1,13 +1,3 @@
-ifeq ($(shell type podman > /dev/null 2>&1; echo $$?), 0)
-	ENGINE ?= podman
-else ifeq ($(shell type docker > /dev/null 2>&1; echo $$?), 0)
-	ENGINE ?= docker
-endif
-
-PHP_VERSION ?= 7.4
-
-RUN = $(ENGINE) run --init -it --rm -v "$(CURDIR):/project" -w /project jakzal/phpqa:php$(PHP_VERSION)
-
 .DEFAULT_GOAL := help
 
 help: ## Display this message help
@@ -15,7 +5,7 @@ help: ## Display this message help
 	@awk '\
 		BEGIN {\
 			FS = ":.*##";\
-			printf "\n\033[33mUsage:\033[0m\n  [PHP_VERSION=major.minor] make [target]\n\n\033[33mAvailable targets:\033[0m\n" \
+			printf "\n\033[33mUsage:\033[0m\n  make [target]\n\n\033[33mAvailable targets:\033[0m\n" \
 		} /^[a-zA-Z0-9_-]+:.*?##/ { \
 			printf "  \033[32m%-18s\033[0m %s\n", $$1, $$2 \
 		} /^##/ { \
@@ -25,39 +15,41 @@ help: ## Display this message help
 
 ## Checks
 
-check: static-analysis cs-check test ## Run all checks
+check: phpstan-check rector-check cs-check phpunit ## Run all checks
 
-static-analysis: vendor ## Run static analysis
-	$(RUN) phpstan analyse --verbose
-.PHONY: static-analysis
+phpstan-check: ## Run PHP Static Analysis
+	vendor/bin/phpstan analyse --verbose
+.PHONY: phpstan-check
 
-cs-check: check-engine ## Check for coding standards violations
+rector-check: ## Check for Rector coding standards violations
+	vendor/bin/rector process --dry-run --no-progress-bar
+.PHONY: rector-check
+
+cs-check: ## Check for coding standards violations
 	mkdir -p var
-	$(RUN) php-cs-fixer fix --dry-run --verbose
+	vendor/bin/php-cs-fixer fix --dry-run --verbose
 .PHONY: cs-check
 
-test: vendor ## Run tests
-	$(RUN) php -d pcov.enabled=1 ./vendor/bin/phpunit --testdox --coverage-text --verbose
-.PHONY: test
+phpunit: ## Run PHPUnit tests
+	php -d pcov.enabled=1 ./vendor/bin/phpunit --testdox --coverage-text --verbose
+.PHONY: phpunit
 
 ## Fixers
 
-cs-fix: check-engine ## Fix coding standards
+fix: rector-fix cs-fix ## Run all fixers
+.PHONY: fix
+
+rector-fix: ## Fix Rector coding standards violations
+	vendor/bin/rector process --no-progress-bar
+.PHONY: rector-fix
+
+cs-fix: ## Fix coding standards violations
 	mkdir -p var
-	$(RUN) php-cs-fixer fix
+	vendor/bin/php-cs-fixer fix --verbose
 .PHONY: cs-fix
 
 ## Misc
 
-clean: check-engine ## Clean up workspace
-	$(RUN) rm -rf composer.lock var/ vendor/
+clean: ## Clean up workspace
+	rm -rf composer.lock var/ vendor/
 .PHONY: clean
-
-vendor: check-engine
-	$(RUN) composer install -vvv
-
-check-engine:
-ifeq ($(ENGINE),)
-	$(error "Container engine not found. Did you install podman or docker?")
-endif
-.PHONY: check-engine

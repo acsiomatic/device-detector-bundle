@@ -1,4 +1,4 @@
-name: Static Analysis
+name: PHP Static Analysis
 
 on:
 
@@ -26,11 +26,12 @@ jobs:
             - name: Setup tools
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.4
-                  tools: phpstan:1, cs2pr
+                  php-version: 8.1
+                  tools: cs2pr
+                  coverage: none
 
             - name: Install Composer dependencies
-              uses: ramsey/composer-install@v1
+              uses: ramsey/composer-install@v2
 
             - name: Cache PHPStan
               uses: actions/cache@v2
@@ -40,4 +41,4 @@ jobs:
                   restore-keys: phpstan-
 
             - name: Run PHP Static Analysis
-              run: phpstan analyse --no-progress --error-format=checkstyle | cs2pr
+              run: vendor/bin/phpstan analyse --no-progress --error-format=checkstyle | cs2pr

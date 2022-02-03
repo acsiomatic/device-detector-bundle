@@ -31,9 +31,9 @@ abstract class CompilerPassFactory
                 }
 
                 $containerBuilder
-                    ->register("$id.traceable", TraceableAdapter::class)
-                    ->setDecoratedService($id, "$id.inner")
-                    ->addArgument(new Reference("$id.inner"))
+                    ->register(sprintf('%s.traceable', $id), TraceableAdapter::class)
+                    ->setDecoratedService($id, sprintf('%s.inner', $id))
+                    ->addArgument(new Reference(sprintf('%s.inner', $id)))
                 ;
             }
         );

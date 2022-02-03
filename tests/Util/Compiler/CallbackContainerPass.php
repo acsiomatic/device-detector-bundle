@@ -17,10 +17,7 @@ final class CallbackContainerPass implements CompilerPassInterface
         $this->callback = $callback;
     }
 
-    /**
-     * @return void
-     */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         \call_user_func($this->callback, $container);
     }

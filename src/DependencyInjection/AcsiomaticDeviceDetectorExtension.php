@@ -19,10 +19,8 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
 {
     /**
      * @param array<string, mixed> $configs
-     *
-     * @return void
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -33,7 +31,7 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
             ->setArguments([
                 $config['bot']['skip_detection'],
                 $config['bot']['discard_information'],
-                null !== $config['cache']['pool'] ? new Reference($config['cache']['pool']) : null,
+                $config['cache']['pool'] !== null ? new Reference($config['cache']['pool']) : null,
             ])
         ;
 
@@ -47,7 +45,7 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
             ])
         ;
 
-        if (null !== $config['twig']['variable_name'] && class_exists(Environment::class)) {
+        if ($config['twig']['variable_name'] !== null && class_exists(Environment::class)) {
             $container
                 ->register(TwigExtension::class, TwigExtension::class)
                 ->setPublic(false)

@@ -20,7 +20,7 @@ This bundle provides the [DeviceDetector class] as a [service], and a [Twig glob
 
 ## Installation
 
-This bundle is compatible with [Symfony] from `3.4` to `6.x`, and [DeviceDetector] from `3.9` to `5.x`.
+This bundle is compatible with [Symfony] from `3.4` to `6.x`, and [DeviceDetector] from `4.0` to `5.x`.
 
 You can install the bundle using Symfony Flex:
 
@@ -121,6 +121,18 @@ class SmartphoneDeterminer
 }
 ```
 
+## Custom parsers
+
+You can inject custom parsers to the `DeviceDetector` instance by providing them as services.
+
+If [autoconfigure] is enabled, they will be injected automatically.
+Otherwise, you need to add the corresponding tag to each custom parsers:
+
+- `acsiomatic.device_detector.bot_parser`
+- `acsiomatic.device_detector.client_parser`
+- `acsiomatic.device_detector.device_parser`
+
+[autoconfigure]: https://symfony.com/doc/current/service_container.html#the-autoconfigure-option
 [DeviceDetector class]: https://github.com/matomo-org/device-detector/blob/master/DeviceDetector.php
 [DeviceDetector]: https://github.com/matomo-org/device-detector
 [Symfony]: https://symfony.com/

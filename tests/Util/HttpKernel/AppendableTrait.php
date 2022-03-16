@@ -3,6 +3,7 @@
 namespace Acsiomatic\DeviceDetectorBundle\Tests\Util\HttpKernel;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 trait AppendableTrait
@@ -22,6 +23,11 @@ trait AppendableTrait
      */
     private $appendedCompilersPass = [];
 
+    /**
+     * @var array<string, Definition>
+     */
+    private $appendDefinitions = [];
+
     public function appendBundle(BundleInterface $bundle): void
     {
         $this->appendedBundles[] = $bundle;
@@ -38,5 +44,10 @@ trait AppendableTrait
     public function appendCompilerPass(CompilerPassInterface $compilerPass): void
     {
         $this->appendedCompilersPass[] = $compilerPass;
+    }
+
+    public function appendDefinition(string $id, Definition $definition): void
+    {
+        $this->appendDefinitions[$id] = $definition;
     }
 }

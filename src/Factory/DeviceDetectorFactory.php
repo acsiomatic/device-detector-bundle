@@ -5,6 +5,9 @@ namespace Acsiomatic\DeviceDetectorBundle\Factory;
 use Acsiomatic\DeviceDetectorBundle\Contracts\DeviceDetectorFactoryInterface;
 use DeviceDetector\Cache\PSR6Bridge;
 use DeviceDetector\DeviceDetector;
+use DeviceDetector\Parser\AbstractBotParser;
+use DeviceDetector\Parser\Client\AbstractClientParser;
+use DeviceDetector\Parser\Device\AbstractDeviceParser;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -33,16 +36,42 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
      */
     private $proxyFactory;
 
+    /**
+     * @var iterable<AbstractBotParser>
+     */
+    private $botParsers = [];
+
+    /**
+     * @var iterable<AbstractClientParser>
+     */
+    private $clientParsers = [];
+
+    /**
+     * @var iterable<AbstractDeviceParser>
+     */
+    private $deviceParsers = [];
+
+    /**
+     * @param iterable<AbstractBotParser>    $botParsers
+     * @param iterable<AbstractClientParser> $clientParsers
+     * @param iterable<AbstractDeviceParser> $deviceParsers
+     */
     public function __construct(
         bool $skipBotDetection,
         bool $discardBotInformation,
         ?CacheItemPoolInterface $cache,
-        ?DeviceDetectorProxyFactory $proxyFactory
+        ?DeviceDetectorProxyFactory $proxyFactory,
+        iterable $botParsers,
+        iterable $clientParsers,
+        iterable $deviceParsers
     ) {
         $this->skipBotDetection = $skipBotDetection;
         $this->discardBotInformation = $discardBotInformation;
         $this->cache = $cache;
         $this->proxyFactory = $proxyFactory;
+        $this->botParsers = $botParsers;
+        $this->clientParsers = $clientParsers;
+        $this->deviceParsers = $deviceParsers;
     }
 
     public function createDeviceDetector(): DeviceDetector
@@ -56,6 +85,18 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
 
         if ($this->cache !== null) {
             $detector->setCache(new PSR6Bridge($this->cache));
+        }
+
+        foreach ($this->botParsers as $botParser) {
+            $detector->addBotParser($botParser);
+        }
+
+        foreach ($this->clientParsers as $botParser) {
+            $detector->addClientParser($botParser);
+        }
+
+        foreach ($this->deviceParsers as $botParser) {
+            $detector->addDeviceParser($botParser);
         }
 
         return $detector;

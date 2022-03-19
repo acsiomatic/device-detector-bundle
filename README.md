@@ -57,6 +57,10 @@ acsiomatic_device_detector:
 
     # If true, DeviceDetector will trigger parser() when necessary
     auto_parse: true
+
+    # Version truncation behavior, it may assume: major, minor, patch, build, or none
+    # By default minor versions will be returned (e.g. X.Y)
+    version_truncation: 'minor'
 ```
 
 ## Usage in controllers

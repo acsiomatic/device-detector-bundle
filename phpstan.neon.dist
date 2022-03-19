@@ -16,7 +16,8 @@ parameters:
                 twig: array{
                     variable_name: string|null
                 },
-                auto_parse: bool
+                auto_parse: bool,
+                version_truncation: 'major'|'minor'|'patch'|'build'|'none'
             }
 '''
     tmpDir: var/phpstan

@@ -54,6 +54,9 @@ acsiomatic_device_detector:
 
         # If null, it will not assign Twig variable
         variable_name: 'device'
+
+    # If true, DeviceDetector will trigger parser() when necessary
+    auto_parse: true
 ```
 
 ## Usage in controllers
@@ -68,8 +71,6 @@ class MyController
 {
     public function index(DeviceDetector $device)
     {
-        $device->parse();
-
         if ($device->isSmartphone()) {
             // ...
         }
@@ -77,15 +78,13 @@ class MyController
 }
 ```
 
-Note that you need to call `parse()` to ask for device's information.
+Note that you need to call `$device->parse()` before asking for device's information if `auto_parse` configuration is false.
 
 ## Usage in Twig
 
 The `DeviceDetector` service is assigned to the Twig templates as `device` variable.
 
 ```twig
-{% do device.parse %}
-
 {% if device.isSmartphone %}
     {# ... #}
 {% endif %}
@@ -116,7 +115,6 @@ class SmartphoneDeterminer
     {
         $deviceDetector = $this->deviceDetectorFactory->createDeviceDetector();
         $deviceDetector->setUserAgent($userAgent);
-        $deviceDetector->parse();
 
         return $deviceDetector->isSmartphone();
     }

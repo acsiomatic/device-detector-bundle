@@ -13,7 +13,7 @@ abstract class CompilerPassFactory
     public static function createPublicAlias(string $alias, string $id): CompilerPassInterface
     {
         return new CallbackContainerPass(
-            static function (ContainerBuilder $containerBuilder) use ($alias, $id) {
+            static function (ContainerBuilder $containerBuilder) use ($alias, $id): void {
                 $containerBuilder
                     ->setAlias($alias, $id)
                     ->setPublic(true)
@@ -25,7 +25,7 @@ abstract class CompilerPassFactory
     public static function createTraceableCache(string $id): CompilerPassInterface
     {
         return new CallbackContainerPass(
-            static function (ContainerBuilder $containerBuilder) use ($id) {
+            static function (ContainerBuilder $containerBuilder) use ($id): void {
                 if (!$containerBuilder->hasDefinition($id)) {
                     $containerBuilder->register($id, NullAdapter::class);
                 }

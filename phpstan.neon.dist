@@ -3,4 +3,20 @@ parameters:
     paths:
         - src
         - tests
+    typeAliases:
+        BundleConfigArray: '''
+            array{
+                cache: array{
+                    pool: string|null
+                },
+                bot: array{
+                    skip_detection: bool,
+                    discard_information: bool
+                },
+                twig: array{
+                    variable_name: string|null
+                },
+                auto_parse: bool
+            }
+'''
     tmpDir: var/phpstan

@@ -22,7 +22,7 @@ final class ServiceAvailabilityTest extends TestCase
         $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
         $kernel->appendCompilerPass(
             new CallbackContainerPass(
-                static function (ContainerBuilder $containerBuilder) {
+                static function (ContainerBuilder $containerBuilder): void {
                     self::assertTrue($containerBuilder->hasDefinition(DeviceDetector::class));
                     self::assertFalse($containerBuilder->getDefinition(DeviceDetector::class)->isPublic());
                 }

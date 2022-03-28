@@ -26,6 +26,10 @@ final class Kernel extends BaseKernel
             foreach ($this->appendedExtensionConfigurations as $extension => $config) {
                 $container->loadFromExtension($extension, $config);
             }
+
+            foreach ($this->appendDefinitions as $id => $definition) {
+                $container->setDefinition($id, $definition);
+            }
         });
     }
 

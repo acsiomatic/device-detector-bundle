@@ -9,7 +9,6 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::PARALLEL, true);
-    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_71);
     $parameters->set(Option::PATHS, [
         __DIR__.'/src',
         __DIR__.'/tests',
@@ -17,5 +16,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $containerConfigurator->import(SetList::CODE_QUALITY);
     $containerConfigurator->import(SetList::CODING_STYLE);
-    $containerConfigurator->import(LevelSetList::UP_TO_PHP_71);
+    $containerConfigurator->import(LevelSetList::UP_TO_PHP_72);
 };

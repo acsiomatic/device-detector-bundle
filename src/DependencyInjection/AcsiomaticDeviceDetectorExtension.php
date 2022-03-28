@@ -8,6 +8,10 @@ use Acsiomatic\DeviceDetectorBundle\Factory\DeviceDetectorFactory;
 use Acsiomatic\DeviceDetectorBundle\Factory\DeviceDetectorProxyFactory;
 use Acsiomatic\DeviceDetectorBundle\Twig\TwigExtension;
 use DeviceDetector\DeviceDetector;
+use DeviceDetector\Parser\AbstractBotParser;
+use DeviceDetector\Parser\Client\AbstractClientParser;
+use DeviceDetector\Parser\Device\AbstractDeviceParser;
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Reference;
@@ -20,6 +24,21 @@ use Twig\Environment;
 final class AcsiomaticDeviceDetectorExtension extends Extension
 {
     /**
+     * @var string
+     */
+    private const BOT_PARSER_TAG = 'acsiomatic.device_detector.bot_parser';
+
+    /**
+     * @var string
+     */
+    private const CLIENT_PARSER_TAG = 'acsiomatic.device_detector.client_parser';
+
+    /**
+     * @var string
+     */
+    private const DEVICE_PARSER_TAG = 'acsiomatic.device_detector.device_parser';
+
+    /**
      * @param array<string, mixed> $configs
      */
     public function load(array $configs, ContainerBuilder $container): void
@@ -29,6 +48,7 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
         /** @var BundleConfigArray $config */
         $config = $this->processConfiguration($configuration, $configs);
 
+        $this->setupParsers($container);
         $this->setupProxy($container, $config);
         $this->setupFactory($container, $config);
         $this->setupDeviceDetector($container);
@@ -74,6 +94,9 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
                 $config['bot']['discard_information'],
                 $config['cache']['pool'] !== null ? new Reference($config['cache']['pool']) : null,
                 $config['auto_parse'] ? new Reference(DeviceDetectorProxyFactory::class) : null,
+                new TaggedIteratorArgument(self::BOT_PARSER_TAG),
+                new TaggedIteratorArgument(self::CLIENT_PARSER_TAG),
+                new TaggedIteratorArgument(self::DEVICE_PARSER_TAG),
             ]);
     }
 
@@ -106,5 +129,20 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
                 $config['twig']['variable_name'],
                 new Reference(DeviceDetector::class),
             ]);
+    }
+
+    private function setupParsers(ContainerBuilder $container): void
+    {
+        $container
+            ->registerForAutoconfiguration(AbstractBotParser::class)
+            ->addTag(self::BOT_PARSER_TAG);
+
+        $container
+            ->registerForAutoconfiguration(AbstractClientParser::class)
+            ->addTag(self::CLIENT_PARSER_TAG);
+
+        $container
+            ->registerForAutoconfiguration(AbstractDeviceParser::class)
+            ->addTag(self::DEVICE_PARSER_TAG);
     }
 }

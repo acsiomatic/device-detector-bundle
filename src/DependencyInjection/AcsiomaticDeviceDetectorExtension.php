@@ -3,7 +3,9 @@
 namespace Acsiomatic\DeviceDetectorBundle\DependencyInjection;
 
 use Acsiomatic\DeviceDetectorBundle\CacheWarmer\ProxyCacheWarmer;
+use Acsiomatic\DeviceDetectorBundle\Contracts\ClientHintsFactoryInterface;
 use Acsiomatic\DeviceDetectorBundle\Contracts\DeviceDetectorFactoryInterface;
+use Acsiomatic\DeviceDetectorBundle\Factory\ClientHintsFactory;
 use Acsiomatic\DeviceDetectorBundle\Factory\DeviceDetectorFactory;
 use Acsiomatic\DeviceDetectorBundle\Factory\DeviceDetectorProxyFactory;
 use Acsiomatic\DeviceDetectorBundle\Twig\TwigExtension;
@@ -50,7 +52,8 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
 
         $this->setupParsers($container);
         $this->setupProxy($container, $config);
-        $this->setupFactory($container, $config);
+        $this->setupClientHintsFactory($container, $config);
+        $this->setupDeviceDetectorFactory($container, $config);
         $this->setupDeviceDetector($container);
         $this->setupTwig($container, $config);
     }
@@ -84,7 +87,17 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
     /**
      * @param BundleConfigArray $config
      */
-    private function setupFactory(ContainerBuilder $container, array $config): void
+    private function setupClientHintsFactory(ContainerBuilder $container, array $config): void
+    {
+        $container
+            ->register(ClientHintsFactoryInterface::class, ClientHintsFactory::class)
+            ->setPublic(false);
+    }
+
+    /**
+     * @param BundleConfigArray $config
+     */
+    private function setupDeviceDetectorFactory(ContainerBuilder $container, array $config): void
     {
         $container
             ->register(DeviceDetectorFactoryInterface::class, DeviceDetectorFactory::class)
@@ -92,6 +105,7 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
             ->setArguments([
                 $config['bot']['skip_detection'],
                 $config['bot']['discard_information'],
+                new Reference(ClientHintsFactoryInterface::class),
                 $config['cache']['pool'] !== null ? new Reference($config['cache']['pool']) : null,
                 $config['auto_parse'] ? new Reference(DeviceDetectorProxyFactory::class) : null,
                 new TaggedIteratorArgument(self::BOT_PARSER_TAG),

@@ -2,13 +2,16 @@
 
 namespace Acsiomatic\DeviceDetectorBundle\Factory;
 
+use Acsiomatic\DeviceDetectorBundle\Contracts\ClientHintsFactoryInterface;
 use Acsiomatic\DeviceDetectorBundle\Contracts\DeviceDetectorFactoryInterface;
 use DeviceDetector\Cache\PSR6Bridge;
+use DeviceDetector\ClientHints;
 use DeviceDetector\DeviceDetector;
 use DeviceDetector\Parser\AbstractBotParser;
 use DeviceDetector\Parser\Client\AbstractClientParser;
 use DeviceDetector\Parser\Device\AbstractDeviceParser;
 use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -25,6 +28,11 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
      * @var bool
      */
     private $discardBotInformation = false;
+
+    /**
+     * @var ClientHintsFactoryInterface
+     */
+    private $clientHintsFactory;
 
     /**
      * @var CacheItemPoolInterface|null
@@ -59,6 +67,7 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
     public function __construct(
         bool $skipBotDetection,
         bool $discardBotInformation,
+        ClientHintsFactoryInterface $clientHintsFactory,
         ?CacheItemPoolInterface $cache,
         ?DeviceDetectorProxyFactory $proxyFactory,
         iterable $botParsers,
@@ -67,6 +76,7 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
     ) {
         $this->skipBotDetection = $skipBotDetection;
         $this->discardBotInformation = $discardBotInformation;
+        $this->clientHintsFactory = $clientHintsFactory;
         $this->cache = $cache;
         $this->proxyFactory = $proxyFactory;
         $this->botParsers = $botParsers;
@@ -102,21 +112,33 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
         return $detector;
     }
 
+    public function createDeviceDetectorFromRequest(Request $request): DeviceDetector
+    {
+        $detector = $this->createDeviceDetector();
+
+        $userAgent = $request->headers->get('user-agent', '');
+        $detector->setUserAgent((string) $userAgent);
+
+        if (class_exists(ClientHints::class) && method_exists($detector, 'setClientHints')) {
+            $clientHints = $this->clientHintsFactory->createClientHintsFromRequest($request);
+            $detector->setClientHints($clientHints);
+        }
+
+        return $detector;
+    }
+
     public static function createDeviceDetectorFromRequestStack(
         DeviceDetectorFactoryInterface $factory,
         RequestStack $requestStack
     ): DeviceDetector {
-        $detector = $factory->createDeviceDetector();
-
         $request = method_exists($requestStack, 'getMasterRequest')
             ? $requestStack->getMasterRequest() // BC for Symfony 5.2 and older
             : $requestStack->getMainRequest();
 
         if ($request) {
-            $userAgent = $request->headers->get('user-agent', '');
-            $detector->setUserAgent((string) $userAgent);
+            return $factory->createDeviceDetectorFromRequest($request);
         }
 
-        return $detector;
+        return $factory->createDeviceDetector();
     }
 }

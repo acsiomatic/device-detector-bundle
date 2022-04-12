@@ -31,7 +31,7 @@ cs-check: ## Check for coding standards violations
 .PHONY: cs-check
 
 phpunit: ## Run PHPUnit tests
-	php -d pcov.enabled=1 ./vendor/bin/phpunit --testdox --coverage-text --verbose
+	php -d pcov.enabled=1 ./vendor/bin/phpunit --testdox --coverage-text --coverage-html var/phpunit/code-coverage-html --verbose
 .PHONY: phpunit
 
 ## Fixers

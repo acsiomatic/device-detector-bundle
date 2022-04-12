@@ -7,7 +7,7 @@
 
 The `AcsiomaticDeviceDetectorBundle` provides integration of the [DeviceDetector] library into the [Symfony] framework.
 
-> [DeviceDetector] is a Universal Device Detection library that parses User Agents and detects devices (desktop, tablet, mobile, tv, cars, console, etc.), clients (browsers, feed readers, media players, PIMs, ...), operating systems, brands and models.
+> [DeviceDetector] is a Universal Device Detection library that parses User Agents and Browser Client Hints to detect devices (desktop, tablet, mobile, tv, cars, console, etc.), clients (browsers, feed readers, media players, PIMs, ...), operating systems, brands and models.
 > 
 > From https://github.com/matomo-org/device-detector
 
@@ -20,7 +20,7 @@ This bundle provides the [DeviceDetector class] as a [service], and a [Twig glob
 
 ## Installation
 
-This bundle is compatible with [Symfony] from `3.4` to `6.x`, and [DeviceDetector] from `4.0` to `5.x`.
+This bundle is compatible with [Symfony] from `3.4` to `6.x`, and [DeviceDetector] from `4.0` to `6.x`.
 
 You can install the bundle using Symfony Flex:
 

@@ -46,7 +46,13 @@ final class Configuration implements ConfigurationInterface
 
             ->booleanNode('auto_parse')->defaultTrue()->end()
 
-            ->end();
+            ->enumNode('version_truncation')
+            ->values(['major', 'minor', 'patch', 'build', 'none'])
+            ->defaultValue('minor')
+            ->end()
+
+            ->end()
+        ;
 
         return $builder;
     }

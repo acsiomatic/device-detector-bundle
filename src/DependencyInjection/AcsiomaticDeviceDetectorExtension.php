@@ -11,6 +11,7 @@ use Acsiomatic\DeviceDetectorBundle\Factory\DeviceDetectorProxyFactory;
 use Acsiomatic\DeviceDetectorBundle\Twig\TwigExtension;
 use DeviceDetector\DeviceDetector;
 use DeviceDetector\Parser\AbstractBotParser;
+use DeviceDetector\Parser\AbstractParser;
 use DeviceDetector\Parser\Client\AbstractClientParser;
 use DeviceDetector\Parser\Device\AbstractDeviceParser;
 use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
@@ -39,6 +40,17 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
      * @var string
      */
     private const DEVICE_PARSER_TAG = 'acsiomatic.device_detector.device_parser';
+
+    /**
+     * @var array<string, int>
+     */
+    private const VERSION_TRUNCATION_MAP = [
+        'major' => AbstractParser::VERSION_TRUNCATION_MAJOR,
+        'minor' => AbstractParser::VERSION_TRUNCATION_MINOR,
+        'patch' => AbstractParser::VERSION_TRUNCATION_PATCH,
+        'build' => AbstractParser::VERSION_TRUNCATION_BUILD,
+        'none' => AbstractParser::VERSION_TRUNCATION_NONE,
+    ];
 
     /**
      * @param array<string, mixed> $configs
@@ -105,6 +117,7 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
             ->setArguments([
                 $config['bot']['skip_detection'],
                 $config['bot']['discard_information'],
+                self::VERSION_TRUNCATION_MAP[$config['version_truncation']],
                 new Reference(ClientHintsFactoryInterface::class),
                 $config['cache']['pool'] !== null ? new Reference($config['cache']['pool']) : null,
                 $config['auto_parse'] ? new Reference(DeviceDetectorProxyFactory::class) : null,

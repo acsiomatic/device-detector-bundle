@@ -30,6 +30,11 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
     private $discardBotInformation = false;
 
     /**
+     * @var int
+     */
+    private $versionTruncation;
+
+    /**
      * @var ClientHintsFactoryInterface
      */
     private $clientHintsFactory;
@@ -67,6 +72,7 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
     public function __construct(
         bool $skipBotDetection,
         bool $discardBotInformation,
+        int $versionTruncation,
         ClientHintsFactoryInterface $clientHintsFactory,
         ?CacheItemPoolInterface $cache,
         ?DeviceDetectorProxyFactory $proxyFactory,
@@ -76,6 +82,7 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
     ) {
         $this->skipBotDetection = $skipBotDetection;
         $this->discardBotInformation = $discardBotInformation;
+        $this->versionTruncation = $versionTruncation;
         $this->clientHintsFactory = $clientHintsFactory;
         $this->cache = $cache;
         $this->proxyFactory = $proxyFactory;
@@ -92,6 +99,8 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
 
         $detector->skipBotDetection($this->skipBotDetection);
         $detector->discardBotInformation($this->discardBotInformation);
+
+        AbstractDeviceParser::setVersionTruncation($this->versionTruncation);
 
         if ($this->cache !== null) {
             $detector->setCache(new PSR6Bridge($this->cache));

@@ -15,19 +15,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 final class ClientHintsTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        if (!method_exists(DeviceDetector::class, 'getClientHints')) {
-            static::markTestSkipped('The MySQLi extension is not available.');
-        }
-    }
-
     public function testDeviceDetectorReceivesClientHints(): void
     {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('request_stack.public', RequestStack::class));
 
@@ -55,7 +48,7 @@ final class ClientHintsTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendCompilerPass(
             CompilerPassFactory::createPublicAlias(
                 'client_hints_factory.public',

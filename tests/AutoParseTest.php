@@ -7,20 +7,15 @@ use Acsiomatic\DeviceDetectorBundle\Contracts\DeviceDetectorFactoryInterface;
 use Acsiomatic\DeviceDetectorBundle\Tests\Util\Compiler\CompilerPassFactory;
 use Acsiomatic\DeviceDetectorBundle\Tests\Util\HttpKernel\Kernel;
 use DeviceDetector\DeviceDetector;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 
 final class AutoParseTest extends TestCase
 {
-    /**
-     * @var Kernel
-     */
-    private static $kernelDefault;
+    private static Kernel $kernelDefault;
 
-    /**
-     * @var Kernel
-     */
-    private static $kernelDisabled;
+    private static Kernel $kernelDisabled;
 
     /**
      * @beforeClass
@@ -31,7 +26,7 @@ final class AutoParseTest extends TestCase
 
         $kernelDefault->appendBundle(new FrameworkBundle());
         $kernelDefault->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernelDefault->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernelDefault->appendDefaultFrameworkExtensionConfiguration();
         $kernelDefault->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
         $kernelDefault->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector_factory.public', DeviceDetectorFactoryInterface::class));
 
@@ -43,7 +38,7 @@ final class AutoParseTest extends TestCase
 
         $kernelDisabled->appendBundle(new FrameworkBundle());
         $kernelDisabled->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernelDisabled->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernelDisabled->appendDefaultFrameworkExtensionConfiguration();
         $kernelDisabled->appendExtensionConfiguration('acsiomatic_device_detector', ['auto_parse' => false]);
         $kernelDisabled->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
         $kernelDisabled->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector_factory.public', DeviceDetectorFactoryInterface::class));
@@ -70,12 +65,8 @@ final class AutoParseTest extends TestCase
         static::assertFalse($deviceDetector->isParsed());
     }
 
-    /**
-     * @dataProvider nonTriggersMethods
-     *
-     * @param mixed... $arguments
-     */
-    public function testParserIsNotTriggeredFor(string $method, ...$arguments): void
+    #[DataProvider('nonTriggersMethods')]
+    public function testParserIsNotTriggeredFor(string $method, mixed ...$arguments): void
     {
         /** @var DeviceDetector $deviceDetector */
         $deviceDetector = self::$kernelDefault->getContainer()->get('device_detector.public');
@@ -84,8 +75,10 @@ final class AutoParseTest extends TestCase
         static::assertFalse($deviceDetector->isParsed());
 
         try {
-            $deviceDetector->$method(...$arguments);
-        } catch (\BadMethodCallException $badMethodCallException) {
+            $callable = [$deviceDetector, $method];
+            \assert(\is_callable($callable));
+            $callable(...$arguments);
+        } catch (\BadMethodCallException) {
             static::markTestSkipped(sprintf('Method "%s" not available in this version', $method));
         }
 
@@ -95,7 +88,7 @@ final class AutoParseTest extends TestCase
     /**
      * @return iterable<string[]>
      */
-    public function nonTriggersMethods(): iterable
+    public static function nonTriggersMethods(): iterable
     {
         yield 'discardBotInformation()' => ['discardBotInformation'];
         yield 'getUserAgent()' => ['getUserAgent'];
@@ -103,11 +96,9 @@ final class AutoParseTest extends TestCase
         yield 'skipBotDetection()' => ['skipBotDetection'];
     }
 
-    /**
-     * @dataProvider triggersMethods
-     * @dataProvider triggersTypeMagicMethods
-     * @dataProvider triggersClientMagicTypeMethods
-     */
+    #[DataProvider('triggersMethods')]
+    #[DataProvider('triggersTypeMagicMethods')]
+    #[DataProvider('triggersClientMagicTypeMethods')]
     public function testParserIsTriggeredIfAutoParserIsEnabled(string $method): void
     {
         /** @var DeviceDetectorFactoryInterface $factory */
@@ -119,22 +110,20 @@ final class AutoParseTest extends TestCase
         static::assertFalse($deviceDetector->isParsed());
 
         try {
-            $deviceDetector->$method();
-        } catch (\BadMethodCallException $badMethodCallException) {
+            $callable = [$deviceDetector, $method];
+            \assert(\is_callable($callable));
+            $callable();
+        } catch (\BadMethodCallException) {
             static::markTestSkipped(sprintf('Method "%s" not available in this version', $method));
         }
 
         static::assertTrue($deviceDetector->isParsed());
     }
 
-    /**
-     * @dataProvider triggersMethods
-     * @dataProvider triggersTypeMagicMethods
-     * @dataProvider triggersClientMagicTypeMethods
-     *
-     * @param mixed... $arguments
-     */
-    public function testParserIsNotCalledIfAutoParseIsDisabled(string $method, ...$arguments): void
+    #[DataProvider('triggersMethods')]
+    #[DataProvider('triggersTypeMagicMethods')]
+    #[DataProvider('triggersClientMagicTypeMethods')]
+    public function testParserIsNotCalledIfAutoParseIsDisabled(string $method, mixed ...$arguments): void
     {
         /** @var DeviceDetectorFactoryInterface $factory */
         $factory = self::$kernelDisabled->getContainer()->get('device_detector_factory.public');
@@ -143,8 +132,10 @@ final class AutoParseTest extends TestCase
         static::assertFalse($deviceDetector->isParsed());
 
         try {
-            $deviceDetector->$method(...$arguments);
-        } catch (\BadMethodCallException $badMethodCallException) {
+            $callable = [$deviceDetector, $method];
+            \assert(\is_callable($callable));
+            $callable(...$arguments);
+        } catch (\BadMethodCallException) {
             static::markTestSkipped(sprintf('Method "%s" not available in this version', $method));
         }
 
@@ -154,7 +145,7 @@ final class AutoParseTest extends TestCase
     /**
      * @return iterable<string[]>
      */
-    public function triggersMethods(): iterable
+    public static function triggersMethods(): iterable
     {
         yield 'getBot()' => ['getBot'];
         yield 'getBrand()' => ['getBrand'];
@@ -172,7 +163,7 @@ final class AutoParseTest extends TestCase
     /**
      * @return iterable<string[]>
      */
-    public function triggersTypeMagicMethods(): iterable
+    public static function triggersTypeMagicMethods(): iterable
     {
         yield 'isCamera()' => ['isCamera'];
         yield 'isCarBrowser()' => ['isCarBrowser'];
@@ -192,7 +183,7 @@ final class AutoParseTest extends TestCase
     /**
      * @return iterable<string[]>
      */
-    public function triggersClientMagicTypeMethods(): iterable
+    public static function triggersClientMagicTypeMethods(): iterable
     {
         yield 'isBrowser()' => ['isBrowser'];
         yield 'isFeedReader()' => ['isFeedReader'];

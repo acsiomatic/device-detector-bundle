@@ -21,12 +21,12 @@ jobs:
         steps:
 
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Setup tools
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 8.1
+                  php-version: 8.2
                   coverage: none
 
             - name: Install Composer dependencies

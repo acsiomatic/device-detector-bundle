@@ -1,28 +1,26 @@
 # AcsiomaticDeviceDetectorBundle
 
-[![PHPUnit](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/phpunit.yaml/badge.svg)](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/phpunit.yaml)
-[![PHP Static Analysis](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/phpstan.yaml/badge.svg)](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/phpstan.yaml)
-[![Rector](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/rector.yaml/badge.svg)](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/rector.yaml)
-[![PHP Coding Standards](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/php-cs-fixer.yaml/badge.svg)](https://github.com/acsiomatic/device-detector-bundle/actions/workflows/php-cs-fixer.yaml)
+The `AcsiomaticDeviceDetectorBundle` provides integration of the [DeviceDetector][dd] library into the [Symfony][sf] framework.
 
-The `AcsiomaticDeviceDetectorBundle` provides integration of the [DeviceDetector] library into the [Symfony] framework.
-
-> [DeviceDetector] is a Universal Device Detection library that parses User Agents and Browser Client Hints to detect devices (desktop, tablet, mobile, tv, cars, console, etc.), clients (browsers, feed readers, media players, PIMs, ...), operating systems, brands and models.
-> 
+> [DeviceDetector][dd] is a Universal Device Detection library that parses User Agents and Browser Client Hints to detect devices (desktop, tablet, mobile, tv, cars, console, etc.), clients (browsers, feed readers, media players, PIMs, ...), operating systems, brands and models.
+>
 > From https://github.com/matomo-org/device-detector
 
-This bundle provides the [DeviceDetector class] as a [service], and a [Twig global variable].
+This bundle provides the [`DeviceDetector` class][dd-class] as [service][sf-service], and [Twig global variable][twig-global-variables].
 
 - [Installation](#installation)
 - [Configuration](#configuration)
-- [Usage in controllers](#usage-in-controllers)
-- [Usage in Twig](#usage-in-twig)
+- [Usage](#usage)
+  - [Usage in controllers](#usage-in-controllers)
+  - [Usage in Twig](#usage-in-twig)
+  - [Usage in route condition](#usage-in-route-condition)
+  - [Parsing custom request](#parsing-custom-request)
+- [Release Policy](#release-policy)
+  - [Dependencies Compatibility Policy](#dependencies-compatibility-policy)
 
 ## Installation
 
-This bundle is compatible with [Symfony] from `3.4` to `6.x`, and [DeviceDetector] from `4.0` to `6.x`.
-
-You can install the bundle using Symfony Flex:
+You can install the bundle using [Composer]:
 
 ```bash
 composer require acsiomatic/device-detector-bundle
@@ -36,6 +34,13 @@ You can configure the bundle using the `acsiomatic_device_detector` configuratio
 # config/packages/acsiomatic_device_detector.yaml
 
 acsiomatic_device_detector:
+
+    # If true, DeviceDetector will trigger parser() when necessary
+    auto_parse: true
+
+    # Version truncation behavior, it may assume: major, minor, patch, build, or none
+    # By default minor versions will be returned (e.g. X.Y)
+    version_truncation: 'minor'
 
     cache:
 
@@ -55,30 +60,26 @@ acsiomatic_device_detector:
         # If null, it will not assign Twig variable
         variable_name: 'device'
 
-    # If true, DeviceDetector will trigger parser() when necessary
-    auto_parse: true
-
-    # Version truncation behavior, it may assume: major, minor, patch, build, or none
-    # By default minor versions will be returned (e.g. X.Y)
-    version_truncation: 'minor'
-
     routing:
 
         # If null, it will not tag DeviceDetector as routing condition service
         condition_service_alias: 'device'
 ```
 
-## Usage in controllers
+## Usage
+
+### Usage in controllers
 
 You can inject `DeviceDetector` as a service.
-This bundle sets up this class according to the configurations under the `acsiomatic_device_detector` section in order to provide information about the current request.
+This bundle sets up an instance of this class according to the configurations under the `acsiomatic_device_detector` section in order to provide information about the main request.
 
 ```php
 use DeviceDetector\DeviceDetector;
+use Symfony\Component\HttpFoundation\Response;
 
 class MyController
 {
-    public function index(DeviceDetector $device)
+    public function index(DeviceDetector $device): Response
     {
         if ($device->isSmartphone()) {
             // ...
@@ -87,9 +88,10 @@ class MyController
 }
 ```
 
-Note that you need to call `$device->parse()` before asking for device's information if `auto_parse` configuration is false.
+> [!NOTE]
+> You need to call `$device->parse()` before asking for device's information if `auto_parse` configuration is false.
 
-## Usage in Twig
+### Usage in Twig
 
 The `DeviceDetector` service is assigned to the Twig templates as `device` variable.
 
@@ -99,68 +101,61 @@ The `DeviceDetector` service is assigned to the Twig templates as `device` varia
 {% endif %}
 ```
 
-## Usage in route condition
+### Usage in route condition
 
 The `DeviceDetector` is tagged as routing condition service.
 
 ```php
-use DeviceDetector\DeviceDetector;
+use Symfony\Component\HttpFoundation\Response;
 
 class MyController
 {
     #[Route('/page', condition: "service('device').isSmartphone()")]
-    public function index()
+    public function index(): Response
     {
         // this endpoint is available only for smartphone devices
     }
 }
 ```
 
-## Parsing custom request
+### Parsing custom request
 
 You might want to parse other request than the current one.
-This bundle provides a service that implements `DeviceDetectorFactoryInterface`.
-This service provides a method that creates fresh `DeviceDetector` instances according to the configurations under the `acsiomatic_device_detector` section, but it doesn't attach them to any request.
-
-```php
-use Acsiomatic\DeviceDetectorBundle\Contracts\DeviceDetectorFactoryInterface;
-
-class SmartphoneDeterminer
-{
-    /**
-     * @var DeviceDetectorFactoryInterface
-     */
-    private $deviceDetectorFactory;
-
-    public function __construct(DeviceDetectorFactoryInterface $factory)
-    {
-        $this->deviceDetectorFactory = $factory;
-    }
-
-    public function isSmartphone(string $userAgent): bool
-    {
-        $deviceDetector = $this->deviceDetectorFactory->createDeviceDetector();
-        $deviceDetector->setUserAgent($userAgent);
-
-        return $deviceDetector->isSmartphone();
-    }
-}
-```
+This bundle provides a service that implements [DeviceDetectorFactoryInterface](src%2FContracts%2FDeviceDetectorFactoryInterface.php).
+This service provides methods that create fresh `DeviceDetector` instances according to the configurations under the `acsiomatic_device_detector` section, but it doesn't attach them to any request.
 
 ## Custom parsers
 
-You can inject custom parsers to the `DeviceDetector` instance by providing them as services.
+You can inject custom parsers into `DeviceDetector` by providing them as services.
 
-If [autoconfigure] is enabled, they will be injected automatically.
+If [autoconfigure][sf-autoconfigure] is enabled, the bundle injects custom parsers.
 Otherwise, you need to add the corresponding tag to each custom parsers:
 
 - `acsiomatic.device_detector.bot_parser`
 - `acsiomatic.device_detector.client_parser`
 - `acsiomatic.device_detector.device_parser`
 
-[autoconfigure]: https://symfony.com/doc/current/service_container.html#the-autoconfigure-option
-[DeviceDetector class]: https://github.com/matomo-org/device-detector/blob/master/DeviceDetector.php
-[DeviceDetector]: https://github.com/matomo-org/device-detector
-[Symfony]: https://symfony.com/
-[Twig global variable]: https://symfony.com/doc/current/templates.html#template-variables
-[service]: https://symfony.com/doc/current/service_container.html#fetching-and-using-services
+## Release Policy
+
+There is a **single** maintained branch per time.
+This branch targets a minor version.
+
+A maintained version reaches its end-of-life when a new minor version is released.
+
+### Dependencies Compatibility Policy
+
+This library is compatible with maintained versions of
+[PHP][php-versions],
+[Device Detector][dd-versions], and
+[Symfony][sf-versions].
+
+[composer]: https://getcomposer.org/
+[dd-class]: https://github.com/matomo-org/device-detector/blob/master/DeviceDetector.php
+[dd-versions]: https://github.com/matomo-org/device-detector/branches
+[dd]: https://github.com/matomo-org/device-detector
+[php-versions]: https://www.php.net/supported-versions.php
+[sf-autoconfigure]: https://symfony.com/doc/current/service_container.html#the-autoconfigure-option
+[sf-service]: https://symfony.com/doc/current/service_container.html#fetching-and-using-services
+[sf-versions]: https://symfony.com/releases#sf-versions
+[sf]: https://symfony.com/
+[twig-global-variables]: https://symfony.com/doc/current/templates.html#global-variables

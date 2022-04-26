@@ -17,27 +17,19 @@ jobs:
 
         name: DD ${{ matrix.dd }} SF ${{ matrix.sf }} PHP ${{ matrix.php }}
         runs-on: ubuntu-latest
+        continue-on-error: ${{ matrix.is_next }}
+
         strategy:
-            fail-fast: false
             matrix:
                 include:
-                    - { dd: '4.0.*', sf: '4.0.*', php: '7.2' }
-                    - { dd: '^4.0',  sf: '^4.0',  php: '7.2' }
-                    - { dd: '4.0.*', sf: '5.0.*', php: '7.3' }
-                    - { dd: '^4.0',  sf: '^5.0',  php: '7.3' }
-                    - { dd: '5.0.*', sf: '5.0.*', php: '7.4' }
-                    - { dd: '^5.0',  sf: '^5.0',  php: '7.4' }
-                    - { dd: '5.0.*', sf: '6.0.*', php: '8.0' }
-                    - { dd: '^5.0',  sf: '^6.0',  php: '8.0' }
-                    - { dd: '5.0.*', sf: '6.0.*', php: '8.1' }
-                    - { dd: '^5.0',  sf: '^6.0',  php: '8.1' }
-                    - { dd: '6.0.*', sf: '6.0.*', php: '8.1' }
-                    - { dd: '^6.0',  sf: '^6.0',  php: '8.1' }
+                    - { dd: '6.1.*', sf: '5.4.*', php: '8.1', is_next: false }
+                    - { dd: '6.1.*', sf: '6.4.*', php: '8.2', is_next: false }
+                    - { dd: '6.1.*', sf: '7.0.*', php: '8.3', is_next: false }
 
         steps:
 
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -46,10 +38,10 @@ jobs:
                   coverage: none
 
             - name: Require specific dependencies versions
-              run: composer require matomo/device-detector:${{ matrix.dd }} symfony/framework-bundle:${{ matrix.sf }}
+              run: composer require -w matomo/device-detector:${{ matrix.dd }} symfony/framework-bundle:${{ matrix.sf }}
 
             - name: Install Composer dependencies
               uses: ramsey/composer-install@v2
 
             - name: Run PHPUnit
-              run: vendor/bin/phpunit --testdox
+              run: vendor/bin/phpunit

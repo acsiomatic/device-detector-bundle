@@ -19,7 +19,7 @@ final class ServiceAvailabilityTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendCompilerPass(
             new CallbackContainerPass(
                 static function (ContainerBuilder $containerBuilder): void {
@@ -37,7 +37,7 @@ final class ServiceAvailabilityTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
 
         $kernel->boot();
@@ -53,7 +53,7 @@ final class ServiceAvailabilityTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendCompilerPass(
             CompilerPassFactory::createPublicAlias(
                 'device_detector_factory.public',
@@ -63,11 +63,8 @@ final class ServiceAvailabilityTest extends TestCase
 
         $kernel->boot();
 
-        /** @var DeviceDetectorFactoryInterface $deviceDetectorFactory */
         $deviceDetectorFactory = $kernel->getContainer()->get('device_detector_factory.public');
-        $deviceDetector = $deviceDetectorFactory->createDeviceDetector();
-
-        static::assertInstanceOf(DeviceDetector::class, $deviceDetector);
+        static::assertInstanceOf(DeviceDetectorFactoryInterface::class, $deviceDetectorFactory);
 
         $kernel->boot();
     }

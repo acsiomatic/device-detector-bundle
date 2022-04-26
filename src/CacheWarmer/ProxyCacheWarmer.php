@@ -7,30 +7,20 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 /**
  * @internal
+ * @readonly
  */
 final class ProxyCacheWarmer implements CacheWarmerInterface
 {
-    /**
-     * @var DeviceDetectorProxyFactory
-     */
-    private $proxyFactory;
-
-    public function __construct(DeviceDetectorProxyFactory $proxyFactory)
-    {
-        $this->proxyFactory = $proxyFactory;
-    }
+    public function __construct(
+        private readonly DeviceDetectorProxyFactory $proxyFactory,
+    ) {}
 
     public function isOptional(): bool
     {
         return false;
     }
 
-    /**
-     * @param string $cacheDir
-     *
-     * @return string[]
-     */
-    public function warmUp($cacheDir)
+    public function warmUp(string $cacheDir, string $buildDir = null): array
     {
         $proxyDir = $this->proxyFactory->getProxyDir();
         if (!is_dir($proxyDir)) {
@@ -45,9 +35,9 @@ final class ProxyCacheWarmer implements CacheWarmerInterface
 
         $files = [];
 
-        $names = scandir($proxyDir) ?: [];
+        $names = \is_array($names = scandir($proxyDir)) ? $names : [];
         foreach ($names as $name) {
-            $file = $proxyDir.'/'.$name;
+            $file = $proxyDir . '/' . $name;
             if (!is_dir($file)) {
                 $files[] = $file;
             }

@@ -10,16 +10,14 @@ use DeviceDetector\DeviceDetector;
 use DeviceDetector\Parser\AbstractBotParser;
 use DeviceDetector\Parser\Client\AbstractClientParser;
 use DeviceDetector\Parser\Device\AbstractDeviceParser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\DependencyInjection\Definition;
 
 class ParserInjectionTest extends TestCase
 {
-    /**
-     * @var Kernel
-     */
-    private static $kernel;
+    private static Kernel $kernel;
 
     /**
      * @before
@@ -29,16 +27,14 @@ class ParserInjectionTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector_factory.public', DeviceDetectorFactoryInterface::class));
 
         self::$kernel = $kernel;
     }
 
-    /**
-     * @dataProvider botParsers
-     */
+    #[DataProvider('botParsers')]
     public function testBotParserInjectionFactory(Definition $definition, bool $shouldFind): void
     {
         self::$kernel->appendDefinition('custom_parser', $definition);
@@ -58,9 +54,7 @@ class ParserInjectionTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider botParsers
-     */
+    #[DataProvider('botParsers')]
     public function testBotParserInjection(Definition $definition, bool $shouldFind): void
     {
         self::$kernel->appendDefinition('custom_parser', $definition);
@@ -82,7 +76,7 @@ class ParserInjectionTest extends TestCase
     /**
      * @return iterable<string, array{Definition, bool}>
      */
-    public function botParsers(): iterable
+    public static function botParsers(): iterable
     {
         yield 'not configured' => [
             (new Definition(CustomBotParser::class))
@@ -105,9 +99,7 @@ class ParserInjectionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider clientParsers
-     */
+    #[DataProvider('clientParsers')]
     public function testClientParserInjectionFactory(Definition $definition, bool $shouldFind): void
     {
         self::$kernel->appendDefinition('custom_parser', $definition);
@@ -127,9 +119,7 @@ class ParserInjectionTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider clientParsers
-     */
+    #[DataProvider('clientParsers')]
     public function testClientParserInjection(Definition $definition, bool $shouldFind): void
     {
         self::$kernel->appendDefinition('custom_parser', $definition);
@@ -151,7 +141,7 @@ class ParserInjectionTest extends TestCase
     /**
      * @return iterable<string, array{Definition, bool}>
      */
-    public function clientParsers(): iterable
+    public static function clientParsers(): iterable
     {
         yield 'not configured' => [
             (new Definition(CustomClientParser::class))
@@ -174,9 +164,7 @@ class ParserInjectionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider deviceParsers
-     */
+    #[DataProvider('deviceParsers')]
     public function testDeviceParserInjectionFactory(Definition $definition, bool $shouldFind): void
     {
         self::$kernel->appendDefinition('custom_parser', $definition);
@@ -196,9 +184,7 @@ class ParserInjectionTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider deviceParsers
-     */
+    #[DataProvider('deviceParsers')]
     public function testDeviceParserInjection(Definition $definition, bool $shouldFind): void
     {
         self::$kernel->appendDefinition('custom_parser', $definition);
@@ -220,7 +206,7 @@ class ParserInjectionTest extends TestCase
     /**
      * @return iterable<string, array{Definition, bool}>
      */
-    public function deviceParsers(): iterable
+    public static function deviceParsers(): iterable
     {
         yield 'no configured' => [
             (new Definition(CustomDeviceParser::class))
@@ -246,9 +232,7 @@ class ParserInjectionTest extends TestCase
 
 final class CustomBotParser extends AbstractBotParser
 {
-    public function discardDetails(): void
-    {
-    }
+    public function discardDetails(): void {}
 
     /**
      * @return array<mixed>
@@ -259,10 +243,6 @@ final class CustomBotParser extends AbstractBotParser
     }
 }
 
-final class CustomClientParser extends AbstractClientParser
-{
-}
+final class CustomClientParser extends AbstractClientParser {}
 
-final class CustomDeviceParser extends AbstractDeviceParser
-{
-}
+final class CustomDeviceParser extends AbstractDeviceParser {}

@@ -7,15 +7,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class CallbackContainerPass implements CompilerPassInterface
 {
-    /**
-     * @var callable
-     */
-    private $callback;
-
-    public function __construct(callable $callback)
-    {
-        $this->callback = $callback;
-    }
+    public function __construct(
+        private readonly \Closure $callback,
+    ) {}
 
     public function process(ContainerBuilder $container): void
     {

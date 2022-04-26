@@ -21,12 +21,12 @@ jobs:
         steps:
 
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Setup tools
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 8.1
+                  php-version: 8.2
                   tools: cs2pr
                   coverage: none
 
@@ -34,11 +34,10 @@ jobs:
               uses: ramsey/composer-install@v2
 
             - name: Cache PHPStan
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: var/phpstan/
                   key: phpstan-${{ github.sha }}
-                  restore-keys: phpstan-
 
             - name: Run PHP Static Analysis
               run: vendor/bin/phpstan analyse --no-progress --error-format=checkstyle | cs2pr

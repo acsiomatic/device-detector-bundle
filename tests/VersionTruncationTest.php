@@ -6,6 +6,7 @@ use Acsiomatic\DeviceDetectorBundle\AcsiomaticDeviceDetectorBundle;
 use Acsiomatic\DeviceDetectorBundle\Contracts\DeviceDetectorFactoryInterface;
 use Acsiomatic\DeviceDetectorBundle\Tests\Util\Compiler\CompilerPassFactory;
 use Acsiomatic\DeviceDetectorBundle\Tests\Util\HttpKernel\Kernel;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 
@@ -21,7 +22,7 @@ final class VersionTruncationTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
 
         $kernel->appendCompilerPass(
             CompilerPassFactory::createPublicAlias(
@@ -43,9 +44,7 @@ final class VersionTruncationTest extends TestCase
         static::assertSame('34.0', $deviceDetector->getClient('version'));
     }
 
-    /**
-     * @dataProvider getVersionTruncationFixtures
-     */
+    #[DataProvider('getVersionTruncationFixtures')]
     public function testSetVersionTruncation(
         string $userAgent,
         string $truncation,
@@ -55,7 +54,7 @@ final class VersionTruncationTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendExtensionConfiguration('acsiomatic_device_detector', ['version_truncation' => $truncation]);
 
         $kernel->appendCompilerPass(
@@ -81,7 +80,7 @@ final class VersionTruncationTest extends TestCase
     /**
      * @return iterable<array{user_agent: string, truncation: string, os_version: string, client_version: string}>
      */
-    public function getVersionTruncationFixtures(): iterable
+    public static function getVersionTruncationFixtures(): iterable
     {
         yield 'none' => [
             'user_agent' => self::USER_AGENT,

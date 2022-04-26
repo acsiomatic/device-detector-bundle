@@ -2,6 +2,8 @@
 
 namespace Acsiomatic\DeviceDetectorBundle\Tests\Util\HttpKernel;
 
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
@@ -39,6 +41,26 @@ trait AppendableTrait
     public function appendExtensionConfiguration(string $extension, array $config = []): void
     {
         $this->appendedExtensionConfigurations[$extension] = $config;
+    }
+
+    public function appendDefaultFrameworkExtensionConfiguration(): void
+    {
+        $config = [
+            'test' => true,
+            'secret' => '53CR37',
+        ];
+
+        if (InstalledVersions::satisfies(new VersionParser(), 'symfony/framework-bundle', '>=6.4')) {
+            $config = array_merge($config, [
+                'handle_all_throwables' => true,
+                'http_method_override' => false,
+                'php_errors' => [
+                    'log' => true,
+                ],
+            ]);
+        }
+
+        $this->appendExtensionConfiguration('framework', $config);
     }
 
     public function appendCompilerPass(CompilerPassInterface $compilerPass): void

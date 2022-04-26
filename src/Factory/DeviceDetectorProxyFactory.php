@@ -11,6 +11,7 @@ use ProxyManager\Proxy\AccessInterceptorInterface;
 
 /**
  * @internal
+ * @readonly
  */
 final class DeviceDetectorProxyFactory
 {
@@ -19,14 +20,11 @@ final class DeviceDetectorProxyFactory
      */
     private const NAMESPACE = 'AcsiomaticDeviceDetectorBundle';
 
-    /**
-     * @var string
-     */
-    private $proxyDir;
+    private readonly string $proxyDir;
 
     public function __construct(string $cacheDir)
     {
-        $this->proxyDir = $cacheDir.'/'.self::NAMESPACE;
+        $this->proxyDir = $cacheDir . '/' . self::NAMESPACE;
     }
 
     public function getProxyDir(): string

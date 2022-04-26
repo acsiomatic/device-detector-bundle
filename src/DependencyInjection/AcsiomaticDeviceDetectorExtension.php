@@ -53,7 +53,7 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
     ];
 
     /**
-     * @param array<string, mixed> $configs
+     * @param array<mixed> $configs
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -64,7 +64,7 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
 
         $this->setupParsers($container);
         $this->setupProxy($container, $config);
-        $this->setupClientHintsFactory($container, $config);
+        $this->setupClientHintsFactory($container);
         $this->setupDeviceDetectorFactory($container, $config);
         $this->setupDeviceDetector($container, $config);
         $this->setupTwig($container, $config);
@@ -96,10 +96,7 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
             ]);
     }
 
-    /**
-     * @param BundleConfigArray $config
-     */
-    private function setupClientHintsFactory(ContainerBuilder $container, array $config): void
+    private function setupClientHintsFactory(ContainerBuilder $container): void
     {
         $container
             ->register(ClientHintsFactoryInterface::class, ClientHintsFactory::class)

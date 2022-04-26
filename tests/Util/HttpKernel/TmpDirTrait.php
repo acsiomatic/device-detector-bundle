@@ -16,7 +16,7 @@ trait TmpDirTrait
 
     private function createTmpDir(string $type): string
     {
-        $dir = sys_get_temp_dir().'/'.uniqid($type, true);
+        $dir = sys_get_temp_dir() . '/' . uniqid($type, true);
 
         if (!file_exists($dir)) {
             mkdir($dir, 0777, true);

@@ -17,7 +17,10 @@ parameters:
                     variable_name: string|null
                 },
                 auto_parse: bool,
-                version_truncation: 'major'|'minor'|'patch'|'build'|'none'
+                version_truncation: 'major'|'minor'|'patch'|'build'|'none',
+                routing: array{
+                    condition_service_alias: string|null
+                }
             }
 '''
     tmpDir: var/phpstan

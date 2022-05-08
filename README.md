@@ -61,6 +61,11 @@ acsiomatic_device_detector:
     # Version truncation behavior, it may assume: major, minor, patch, build, or none
     # By default minor versions will be returned (e.g. X.Y)
     version_truncation: 'minor'
+
+    routing:
+
+        # If null, it will not tag DeviceDetector as routing condition service
+        condition_service_alias: 'device'
 ```
 
 ## Usage in controllers
@@ -92,6 +97,23 @@ The `DeviceDetector` service is assigned to the Twig templates as `device` varia
 {% if device.isSmartphone %}
     {# ... #}
 {% endif %}
+```
+
+## Usage in route condition
+
+The `DeviceDetector` is tagged as routing condition service.
+
+```php
+use DeviceDetector\DeviceDetector;
+
+class MyController
+{
+    #[Route('/page', condition: "service('device').isSmartphone()")]
+    public function index()
+    {
+        // this endpoint is available only for smartphone devices
+    }
+}
 ```
 
 ## Parsing custom request

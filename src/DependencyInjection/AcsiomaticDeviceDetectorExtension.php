@@ -66,7 +66,7 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
         $this->setupProxy($container, $config);
         $this->setupClientHintsFactory($container, $config);
         $this->setupDeviceDetectorFactory($container, $config);
-        $this->setupDeviceDetector($container);
+        $this->setupDeviceDetector($container, $config);
         $this->setupTwig($container, $config);
     }
 
@@ -127,9 +127,12 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
             ]);
     }
 
-    private function setupDeviceDetector(ContainerBuilder $container): void
+    /**
+     * @param BundleConfigArray $config
+     */
+    private function setupDeviceDetector(ContainerBuilder $container, array $config): void
     {
-        $container
+        $definition = $container
             ->register(DeviceDetector::class, DeviceDetector::class)
             ->setPublic(false)
             ->setFactory([DeviceDetectorFactory::class, 'createDeviceDetectorFromRequestStack'])
@@ -137,6 +140,12 @@ final class AcsiomaticDeviceDetectorExtension extends Extension
                 new Reference(DeviceDetectorFactoryInterface::class),
                 new Reference(RequestStack::class),
             ]);
+
+        if ($config['routing']['condition_service_alias'] !== null) {
+            $definition->addTag('routing.condition_service', [
+                'alias' => $config['routing']['condition_service_alias'],
+            ]);
+        }
     }
 
     /**

@@ -51,6 +51,13 @@ final class Configuration implements ConfigurationInterface
             ->defaultValue('minor')
             ->end()
 
+            ->arrayNode('routing')
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->scalarNode('condition_service_alias')->defaultValue('device')->end()
+            ->end()
+            ->end()
+
             ->end()
         ;
 

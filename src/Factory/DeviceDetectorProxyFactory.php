@@ -7,6 +7,7 @@ use ProxyManager\Configuration;
 use ProxyManager\Factory\AccessInterceptorValueHolderFactory;
 use ProxyManager\FileLocator\FileLocator;
 use ProxyManager\GeneratorStrategy\FileWriterGeneratorStrategy;
+use ProxyManager\Proxy\AccessInterceptorInterface;
 
 /**
  * @internal
@@ -35,44 +36,33 @@ final class DeviceDetectorProxyFactory
 
     public function createDeviceDetectorProxy(): DeviceDetector
     {
-        $parseCaller = static function (
-            DeviceDetector $proxy,
-            DeviceDetector $real
-        ): void {
-            if (!$real->isParsed()) {
-                $real->parse();
-            }
-        };
-
-        $magicParseCaller = static function (
-            DeviceDetector $proxy,
-            DeviceDetector $real,
-            string $method,
-            array $arguments
-        ): void {
-            if (!$real->isParsed() && 0 === stripos($arguments['methodName'] ?? '', 'is')) {
-                $real->parse();
-            }
-        };
-
         $configuration = $this->createConfiguration();
-        $factory = new AccessInterceptorValueHolderFactory($configuration);
 
-        return $factory->createProxy(new DeviceDetector(), [
-            '__call' => $magicParseCaller,
-            'getBot' => $parseCaller,
-            'getBrand' => $parseCaller,
-            'getBrandName' => $parseCaller,
-            'getClient' => $parseCaller,
-            'getDevice' => $parseCaller,
-            'getDeviceName' => $parseCaller,
-            'getModel' => $parseCaller,
-            'getOs' => $parseCaller,
-            'isBot' => $parseCaller,
-            'isBrowser' => $parseCaller,
-            'isDesktop' => $parseCaller,
-            'isMobile' => $parseCaller,
-        ]);
+        $instance = new DeviceDetector();
+
+        $autoParserForMagicCall = $this->buildAutoParserCallerForMagicCall();
+        $autoParser = $this->buildAutoParserCaller();
+        $prefixInterceptors = [
+            '__call' => $autoParserForMagicCall,
+            'getBot' => $autoParser,
+            'getBrand' => $autoParser,
+            'getBrandName' => $autoParser,
+            'getClient' => $autoParser,
+            'getDevice' => $autoParser,
+            'getDeviceName' => $autoParser,
+            'getModel' => $autoParser,
+            'getOs' => $autoParser,
+            'isBot' => $autoParser,
+            'isBrowser' => $autoParser,
+            'isDesktop' => $autoParser,
+            'isMobile' => $autoParser,
+        ];
+
+        return (new AccessInterceptorValueHolderFactory($configuration))
+            ->createProxy(
+                $instance,
+                $prefixInterceptors
+            );
     }
 
     private function createConfiguration(): Configuration
@@ -85,5 +75,45 @@ final class DeviceDetectorProxyFactory
         $config->getProxyAutoloader();
 
         return $config;
+    }
+
+    /**
+     * @return callable(
+     *     AccessInterceptorInterface<DeviceDetector> $proxy,
+     *     DeviceDetector $real,
+     *     string $method,
+     *     array $arguments,
+     * )
+     */
+    private function buildAutoParserCallerForMagicCall(): callable
+    {
+        return static function (
+            AccessInterceptorInterface $proxy,
+            DeviceDetector $real,
+            string $method,
+            array $arguments
+        ): void {
+            if (!$real->isParsed() && 0 === stripos($arguments['methodName'] ?? '', 'is')) {
+                $real->parse();
+            }
+        };
+    }
+
+    /**
+     * @return callable(
+     *     AccessInterceptorInterface<DeviceDetector> $proxy,
+     *     DeviceDetector $real,
+     * )
+     */
+    private function buildAutoParserCaller(): callable
+    {
+        return static function (
+            AccessInterceptorInterface $proxy,
+            DeviceDetector $real
+        ): void {
+            if (!$real->isParsed()) {
+                $real->parse();
+            }
+        };
     }
 }

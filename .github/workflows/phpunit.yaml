@@ -45,12 +45,11 @@ jobs:
                   php-version: ${{ matrix.php }}
                   coverage: none
 
+            - name: Require specific dependencies versions
+              run: composer require matomo/device-detector:${{ matrix.dd }} symfony/framework-bundle:${{ matrix.sf }}
+
             - name: Install Composer dependencies
               uses: ramsey/composer-install@v2
-              with:
-                  composer-options: >
-                    --with matomo/device-detector:${{ matrix.dd }}
-                    --with symfony/framework-bundle:${{ matrix.sf }}
 
             - name: Run PHPUnit
               run: vendor/bin/phpunit --testdox

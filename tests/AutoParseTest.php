@@ -73,7 +73,7 @@ final class AutoParseTest extends TestCase
     /**
      * @dataProvider nonTriggersMethods
      *
-     * @param mixed ...$arguments
+     * @param mixed... $arguments
      */
     public function testParserIsNotTriggeredFor(string $method, ...$arguments): void
     {
@@ -132,7 +132,7 @@ final class AutoParseTest extends TestCase
      * @dataProvider triggersTypeMagicMethods
      * @dataProvider triggersClientMagicTypeMethods
      *
-     * @param mixed ...$arguments
+     * @param mixed... $arguments
      */
     public function testParserIsNotCalledIfAutoParseIsDisabled(string $method, ...$arguments): void
     {

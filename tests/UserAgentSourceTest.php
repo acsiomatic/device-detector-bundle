@@ -18,7 +18,7 @@ final class UserAgentSourceTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('request_stack.public', RequestStack::class));
 

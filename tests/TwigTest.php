@@ -19,8 +19,8 @@ final class TwigTest extends TestCase
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
         $kernel->appendBundle(new TwigBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
-        $kernel->appendExtensionConfiguration('twig', ['paths' => [__DIR__.'/templates']]);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
+        $kernel->appendExtensionConfiguration('twig', ['paths' => [__DIR__ . '/templates']]);
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('twig.public', 'twig'));
 
         $kernel->boot();
@@ -37,8 +37,8 @@ final class TwigTest extends TestCase
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
         $kernel->appendBundle(new TwigBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
-        $kernel->appendExtensionConfiguration('twig', ['paths' => [__DIR__.'/templates']]);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
+        $kernel->appendExtensionConfiguration('twig', ['paths' => [__DIR__ . '/templates']]);
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('twig.public', 'twig'));
 
         $kernel->boot();
@@ -55,9 +55,9 @@ final class TwigTest extends TestCase
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
         $kernel->appendBundle(new TwigBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendExtensionConfiguration('acsiomatic_device_detector', ['twig' => ['variable_name' => null]]);
-        $kernel->appendExtensionConfiguration('twig', ['paths' => [__DIR__.'/templates']]);
+        $kernel->appendExtensionConfiguration('twig', ['paths' => [__DIR__ . '/templates']]);
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('twig.public', 'twig'));
 
         $kernel->boot();
@@ -74,9 +74,9 @@ final class TwigTest extends TestCase
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
         $kernel->appendBundle(new TwigBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendExtensionConfiguration('acsiomatic_device_detector', ['twig' => ['variable_name' => 'custom']]);
-        $kernel->appendExtensionConfiguration('twig', ['paths' => [__DIR__.'/templates']]);
+        $kernel->appendExtensionConfiguration('twig', ['paths' => [__DIR__ . '/templates']]);
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('twig.public', 'twig'));
 
         $kernel->boot();
@@ -94,8 +94,8 @@ final class TwigTest extends TestCase
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
         $kernel->appendBundle(new TwigBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
-        $kernel->appendExtensionConfiguration('twig', ['paths' => [__DIR__.'/templates']]);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
+        $kernel->appendExtensionConfiguration('twig', ['paths' => [__DIR__ . '/templates']]);
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('twig.public', 'twig'));
 

@@ -17,7 +17,7 @@ class RoutingConditionServiceTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendCompilerPass(
             new CallbackContainerPass(
                 static function (ContainerBuilder $containerBuilder): void {
@@ -39,7 +39,7 @@ class RoutingConditionServiceTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendExtensionConfiguration('acsiomatic_device_detector', ['routing' => ['condition_service_alias' => 'custom']]);
         $kernel->appendCompilerPass(
             new CallbackContainerPass(
@@ -62,7 +62,7 @@ class RoutingConditionServiceTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendExtensionConfiguration('acsiomatic_device_detector', ['routing' => ['condition_service_alias' => null]]);
         $kernel->appendCompilerPass(
             new CallbackContainerPass(

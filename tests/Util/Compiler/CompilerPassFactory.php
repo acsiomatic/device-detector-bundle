@@ -16,8 +16,7 @@ abstract class CompilerPassFactory
             static function (ContainerBuilder $containerBuilder) use ($alias, $id): void {
                 $containerBuilder
                     ->setAlias($alias, $id)
-                    ->setPublic(true)
-                ;
+                    ->setPublic(true);
             }
         );
     }
@@ -33,8 +32,7 @@ abstract class CompilerPassFactory
                 $containerBuilder
                     ->register(sprintf('%s.traceable', $id), TraceableAdapter::class)
                     ->setDecoratedService($id, sprintf('%s.inner', $id))
-                    ->addArgument(new Reference(sprintf('%s.inner', $id)))
-                ;
+                    ->addArgument(new Reference(sprintf('%s.inner', $id)));
             }
         );
     }

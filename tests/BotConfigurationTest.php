@@ -21,7 +21,7 @@ final class BotConfigurationTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
 
         $kernel->boot();
@@ -39,7 +39,7 @@ final class BotConfigurationTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendExtensionConfiguration('acsiomatic_device_detector', ['bot' => ['skip_detection' => true]]);
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
 
@@ -58,7 +58,7 @@ final class BotConfigurationTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendExtensionConfiguration('acsiomatic_device_detector', ['bot' => ['skip_detection' => false]]);
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
 
@@ -77,7 +77,7 @@ final class BotConfigurationTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
 
         $kernel->boot();
@@ -98,7 +98,7 @@ final class BotConfigurationTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendExtensionConfiguration('acsiomatic_device_detector', ['bot' => ['discard_information' => true]]);
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
 
@@ -109,11 +109,12 @@ final class BotConfigurationTest extends TestCase
         $deviceDetector->setUserAgent(self::BOT_USER_AGENT);
         $deviceDetector->parse();
 
-        /** @var array<mixed> $botInfo */
+        static::assertTrue($deviceDetector->isBot());
+
         $botInfo = $deviceDetector->getBot();
 
-        // isset() call is a BC layer for DeviceDetector 3.x
-        static::assertFalse(isset($botInfo['name']));
+        static::assertIsArray($botInfo);
+        static::assertArrayNotHasKey('name', $botInfo);
     }
 
     public function testDoNotDiscardBotInformation(): void
@@ -121,7 +122,7 @@ final class BotConfigurationTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendExtensionConfiguration('acsiomatic_device_detector', ['bot' => ['discard_information' => false]]);
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
 

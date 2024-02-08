@@ -8,24 +8,14 @@ use Twig\Extension\GlobalsInterface;
 
 /**
  * @internal
+ * @readonly
  */
 final class TwigExtension extends AbstractExtension implements GlobalsInterface
 {
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var DeviceDetector
-     */
-    private $detector;
-
-    public function __construct(string $name, DeviceDetector $detector)
-    {
-        $this->name = $name;
-        $this->detector = $detector;
-    }
+    public function __construct(
+        private readonly string $name,
+        private readonly DeviceDetector $detector,
+    ) {}
 
     /**
      * @return array<string, DeviceDetector>

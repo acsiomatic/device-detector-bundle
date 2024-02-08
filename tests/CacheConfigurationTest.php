@@ -17,7 +17,7 @@ final class CacheConfigurationTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendCompilerPass(CompilerPassFactory::createTraceableCache('cache.app'));
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('cache.app.public', 'cache.app'));
@@ -43,7 +43,7 @@ final class CacheConfigurationTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendExtensionConfiguration('acsiomatic_device_detector', ['cache' => ['pool' => 'cache.not_app']]);
         $kernel->appendCompilerPass(CompilerPassFactory::createTraceableCache('cache.app'));
         $kernel->appendCompilerPass(CompilerPassFactory::createTraceableCache('cache.not_app'));
@@ -76,7 +76,7 @@ final class CacheConfigurationTest extends TestCase
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
         $kernel->appendBundle(new AcsiomaticDeviceDetectorBundle());
-        $kernel->appendExtensionConfiguration('framework', ['test' => true, 'secret' => '53CR37']);
+        $kernel->appendDefaultFrameworkExtensionConfiguration();
         $kernel->appendExtensionConfiguration('acsiomatic_device_detector', ['cache' => ['pool' => null]]);
         $kernel->appendCompilerPass(CompilerPassFactory::createTraceableCache('cache.app'));
         $kernel->appendCompilerPass(CompilerPassFactory::createPublicAlias('device_detector.public', DeviceDetector::class));

@@ -5,7 +5,6 @@ namespace Acsiomatic\DeviceDetectorBundle\Factory;
 use Acsiomatic\DeviceDetectorBundle\Contracts\ClientHintsFactoryInterface;
 use Acsiomatic\DeviceDetectorBundle\Contracts\DeviceDetectorFactoryInterface;
 use DeviceDetector\Cache\PSR6Bridge;
-use DeviceDetector\ClientHints;
 use DeviceDetector\DeviceDetector;
 use DeviceDetector\Parser\AbstractBotParser;
 use DeviceDetector\Parser\Client\AbstractClientParser;
@@ -16,84 +15,28 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @internal
+ * @readonly
  */
 final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
 {
-    /**
-     * @var bool
-     */
-    private $skipBotDetection = false;
-
-    /**
-     * @var bool
-     */
-    private $discardBotInformation = false;
-
-    /**
-     * @var int
-     */
-    private $versionTruncation;
-
-    /**
-     * @var ClientHintsFactoryInterface
-     */
-    private $clientHintsFactory;
-
-    /**
-     * @var CacheItemPoolInterface|null
-     */
-    private $cache;
-
-    /**
-     * @var DeviceDetectorProxyFactory|null
-     */
-    private $proxyFactory;
-
-    /**
-     * @var iterable<AbstractBotParser>
-     */
-    private $botParsers = [];
-
-    /**
-     * @var iterable<AbstractClientParser>
-     */
-    private $clientParsers = [];
-
-    /**
-     * @var iterable<AbstractDeviceParser>
-     */
-    private $deviceParsers = [];
-
-    /**
-     * @param iterable<AbstractBotParser>    $botParsers
-     * @param iterable<AbstractClientParser> $clientParsers
-     * @param iterable<AbstractDeviceParser> $deviceParsers
-     */
     public function __construct(
-        bool $skipBotDetection,
-        bool $discardBotInformation,
-        int $versionTruncation,
-        ClientHintsFactoryInterface $clientHintsFactory,
-        ?CacheItemPoolInterface $cache,
-        ?DeviceDetectorProxyFactory $proxyFactory,
-        iterable $botParsers,
-        iterable $clientParsers,
-        iterable $deviceParsers
-    ) {
-        $this->skipBotDetection = $skipBotDetection;
-        $this->discardBotInformation = $discardBotInformation;
-        $this->versionTruncation = $versionTruncation;
-        $this->clientHintsFactory = $clientHintsFactory;
-        $this->cache = $cache;
-        $this->proxyFactory = $proxyFactory;
-        $this->botParsers = $botParsers;
-        $this->clientParsers = $clientParsers;
-        $this->deviceParsers = $deviceParsers;
-    }
+        private readonly bool $skipBotDetection,
+        private readonly bool $discardBotInformation,
+        private readonly int $versionTruncation,
+        private readonly ClientHintsFactoryInterface $clientHintsFactory,
+        private readonly ?CacheItemPoolInterface $cache,
+        private readonly ?DeviceDetectorProxyFactory $proxyFactory,
+        /** @var iterable<AbstractBotParser> */
+        private readonly iterable $botParsers,
+        /** @var iterable<AbstractClientParser> */
+        private readonly iterable $clientParsers,
+        /** @var iterable<AbstractDeviceParser> */
+        private readonly iterable $deviceParsers,
+    ) {}
 
     public function createDeviceDetector(): DeviceDetector
     {
-        $detector = $this->proxyFactory !== null
+        $detector = $this->proxyFactory instanceof DeviceDetectorProxyFactory
             ? $this->proxyFactory->createDeviceDetectorProxy()
             : new DeviceDetector();
 
@@ -102,7 +45,7 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
 
         AbstractDeviceParser::setVersionTruncation($this->versionTruncation);
 
-        if ($this->cache !== null) {
+        if ($this->cache instanceof CacheItemPoolInterface) {
             $detector->setCache(new PSR6Bridge($this->cache));
         }
 
@@ -128,26 +71,20 @@ final class DeviceDetectorFactory implements DeviceDetectorFactoryInterface
         $userAgent = $request->headers->get('user-agent', '');
         $detector->setUserAgent((string) $userAgent);
 
-        if (class_exists(ClientHints::class) && method_exists($detector, 'setClientHints')) {
-            $clientHints = $this->clientHintsFactory->createClientHintsFromRequest($request);
-            $detector->setClientHints($clientHints);
-        }
+        $clientHints = $this->clientHintsFactory->createClientHintsFromRequest($request);
+        $detector->setClientHints($clientHints);
 
         return $detector;
     }
 
     public static function createDeviceDetectorFromRequestStack(
         DeviceDetectorFactoryInterface $factory,
-        RequestStack $requestStack
+        RequestStack $requestStack,
     ): DeviceDetector {
-        $request = method_exists($requestStack, 'getMasterRequest')
-            ? $requestStack->getMasterRequest() // BC for Symfony 5.2 and older
-            : $requestStack->getMainRequest();
+        $request = $requestStack->getMainRequest();
 
-        if ($request) {
-            return $factory->createDeviceDetectorFromRequest($request);
-        }
-
-        return $factory->createDeviceDetector();
+        return $request instanceof Request
+            ? $factory->createDeviceDetectorFromRequest($request)
+            : $factory->createDeviceDetector();
     }
 }

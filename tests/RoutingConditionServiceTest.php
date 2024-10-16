@@ -27,8 +27,8 @@ class RoutingConditionServiceTest extends TestCase
 
                     self::assertTrue($definition->hasTag('routing.condition_service'));
                     self::assertSame([['alias' => 'device']], $definition->getTag('routing.condition_service'));
-                }
-            )
+                },
+            ),
         );
 
         $kernel->boot();
@@ -50,8 +50,8 @@ class RoutingConditionServiceTest extends TestCase
 
                     self::assertTrue($definition->hasTag('routing.condition_service'));
                     self::assertSame([['alias' => 'custom']], $definition->getTag('routing.condition_service'));
-                }
-            )
+                },
+            ),
         );
 
         $kernel->boot();
@@ -69,8 +69,8 @@ class RoutingConditionServiceTest extends TestCase
                 static function (ContainerBuilder $containerBuilder): void {
                     self::assertTrue($containerBuilder->hasDefinition(DeviceDetector::class));
                     self::assertFalse($containerBuilder->getDefinition(DeviceDetector::class)->hasTag('routing.condition_service'));
-                }
-            )
+                },
+            ),
         );
 
         $kernel->boot();

@@ -52,8 +52,8 @@ final class ClientHintsTest extends TestCase
         $kernel->appendCompilerPass(
             CompilerPassFactory::createPublicAlias(
                 'client_hints_factory.public',
-                ClientHintsFactoryInterface::class
-            )
+                ClientHintsFactoryInterface::class,
+            ),
         );
 
         $kernel->boot();

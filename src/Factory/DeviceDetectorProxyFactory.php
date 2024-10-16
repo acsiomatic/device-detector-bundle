@@ -59,7 +59,7 @@ final class DeviceDetectorProxyFactory
         return (new AccessInterceptorValueHolderFactory($configuration))
             ->createProxy(
                 $instance,
-                $prefixInterceptors
+                $prefixInterceptors,
             );
     }
 
@@ -89,7 +89,7 @@ final class DeviceDetectorProxyFactory
             AccessInterceptorInterface $proxy,
             DeviceDetector $real,
             string $method,
-            array $arguments
+            array $arguments,
         ): void {
             if (!$real->isParsed() && 0 === stripos($arguments['methodName'] ?? '', 'is')) {
                 $real->parse();
@@ -107,7 +107,7 @@ final class DeviceDetectorProxyFactory
     {
         return static function (
             AccessInterceptorInterface $proxy,
-            DeviceDetector $real
+            DeviceDetector $real,
         ): void {
             if (!$real->isParsed()) {
                 $real->parse();

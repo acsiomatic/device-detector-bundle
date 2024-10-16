@@ -27,8 +27,8 @@ final class VersionTruncationTest extends TestCase
         $kernel->appendCompilerPass(
             CompilerPassFactory::createPublicAlias(
                 'device_detector_factory.public',
-                DeviceDetectorFactoryInterface::class
-            )
+                DeviceDetectorFactoryInterface::class,
+            ),
         );
 
         $kernel->boot();
@@ -49,7 +49,7 @@ final class VersionTruncationTest extends TestCase
         string $userAgent,
         string $truncation,
         string $expectedOsVersion,
-        string $expectedClientVersion
+        string $expectedClientVersion,
     ): void {
         $kernel = new Kernel('test', true);
         $kernel->appendBundle(new FrameworkBundle());
@@ -60,8 +60,8 @@ final class VersionTruncationTest extends TestCase
         $kernel->appendCompilerPass(
             CompilerPassFactory::createPublicAlias(
                 'device_detector_factory.public',
-                DeviceDetectorFactoryInterface::class
-            )
+                DeviceDetectorFactoryInterface::class,
+            ),
         );
 
         $kernel->boot();

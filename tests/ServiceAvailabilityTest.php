@@ -25,8 +25,8 @@ final class ServiceAvailabilityTest extends TestCase
                 static function (ContainerBuilder $containerBuilder): void {
                     self::assertTrue($containerBuilder->hasDefinition(DeviceDetector::class));
                     self::assertFalse($containerBuilder->getDefinition(DeviceDetector::class)->isPublic());
-                }
-            )
+                },
+            ),
         );
 
         $kernel->boot();
@@ -57,8 +57,8 @@ final class ServiceAvailabilityTest extends TestCase
         $kernel->appendCompilerPass(
             CompilerPassFactory::createPublicAlias(
                 'device_detector_factory.public',
-                DeviceDetectorFactoryInterface::class
-            )
+                DeviceDetectorFactoryInterface::class,
+            ),
         );
 
         $kernel->boot();

@@ -70,7 +70,9 @@ final class DeviceDetectorProxyFactory
         $config->setGeneratorStrategy(new FileWriterGeneratorStrategy(new FileLocator($this->proxyDir)));
         $config->setProxiesTargetDir($this->proxyDir);
 
-        $config->getProxyAutoloader();
+        /** @var callable $loader */
+        $loader = $config->getProxyAutoloader();
+        spl_autoload_register($loader);
 
         return $config;
     }

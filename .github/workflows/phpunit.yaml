@@ -27,7 +27,6 @@ jobs:
                     - { dd: '6.4.*', sf: '7.0.*', php: '8.3', is_next: false }
                     - { dd: '6.4.*', sf: '7.1.*', php: '8.3', is_next: false }
                     - { dd: '6.4.*', sf: '7.2.*', php: '8.3', is_next: false }
-                    - { dd: '6.4.*', sf: '8.0.*', php: '8.3', is_next: false }
                     - { dd: '6.4.*', sf: '8.0.*', php: '8.4', is_next: false }
 
         steps:
